@@ -1,58 +1,36 @@
-'use client'; // Ensure client-side rendering
+'use client'; // Enable client-side code
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import 'quill/dist/quill.snow.css'; // Import Quill styles
+import dynamic from 'next/dynamic';
 
-const NewNoticePage = () => {
-  const quillRef = useRef(null); // Ref for the Quill editor element
-  const [quillInstance, setQuillInstance] = useState(null); // State for the Quill instance
-  const [title, setTitle] = useState(''); // State for the notice title
-  const [message, setMessage] = useState(''); // State for the notice message
-  const [error, setError] = useState(null); // State for error handling
-  const [isLoading, setIsLoading] = useState(true); // State to track loading
-  const router = useRouter(); // Next.js router for navigation
+// Dynamically import the Quill editor
+const Quill = dynamic(() => import('react-quill'), { ssr: false });
 
-  useEffect(() => {
-    // Ensure Quill is initialized only on the client side
-    if (typeof window !== 'undefined' && quillRef.current && !quillInstance) {
-      import('quill').then((Quill) => {
-        const toolbarOptions = [
-          ['bold', 'italic', 'underline', 'strike'], // Formatting buttons
-          ['blockquote', 'code-block'],
-          [{ header: 1 }, { header: 2 }], // Custom header sizes
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          [{ script: 'sub' }, { script: 'super' }], // Subscript/superscript
-          [{ indent: '-1' }, { indent: '+1' }], // Indentation
-          [{ direction: 'rtl' }], // Text direction
-          [{ size: ['small', false, 'large', 'huge'] }], // Text size options
-          [{ header: [1, 2, 3, 4, 5, 6, false] }], // Header dropdown
-          [{ color: [] }, { background: [] }], // Color options
-          [{ font: [] }],
-          [{ align: [] }],
-          ['clean'], // Clear formatting button
-        ];
+export default function NewNoticeForm() {
+  const [title, setTitle] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState(null);
+  const router = useRouter();
 
-        const quill = new Quill(quillRef.current, {
-          theme: 'snow',
-          modules: {
-            toolbar: toolbarOptions,
-          },
-        });
-
-        // Listen for text changes and update the message state
-        quill.on('text-change', () => {
-          setMessage(quill.root.innerHTML);
-        });
-
-        setQuillInstance(quill);
-        setIsLoading(false); // Set loading to false when Quill is initialized
-      }).catch((err) => {
-        console.error('Failed to load Quill:', err);
-        setError('Failed to load the editor. Please refresh the page.');
-      });
-    }
-  }, [quillInstance]);
+  const quillModules = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+      ['blockquote', 'code-block'],
+      [{ header: 1 }, { header: 2 }],             // custom button values
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ script: 'sub' }, { script: 'super' }],  // superscript/subscript
+      [{ indent: '-1' }, { indent: '+1' }],      // outdent/indent
+      [{ direction: 'rtl' }],                     // text direction
+      [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      [{ color: [] }, { background: [] }],        // dropdown with defaults from theme
+      [{ font: [] }],
+      [{ align: [] }],
+      ['clean']                                   // remove formatting button
+    ],
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,22 +42,22 @@ const NewNoticePage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, message }), // Send title and message
+        body: JSON.stringify({ title, message }),
       });
 
       if (!res.ok) {
         throw new Error('Failed to create notice');
       }
 
-      router.push('/admin/news'); // Redirect to the news page on success
+      router.push('/admin/news'); // Redirect to news page
     } catch (err) {
-      setError(err.message); // Set error message if submission fails
+      setError(err.message);
     }
   };
 
   return (
-    <div className="flex items-start justify-start p-6">
-      <form onSubmit={handleSubmit} className="w-full max-w-2xl h-full shadow-lg rounded-md p-4 sm:p-6">
+    <div className="flex items-start justify-start ">
+      <form onSubmit={handleSubmit} className="w-full max-w-2xl h-full shadow-lg rounded-md  sm:p-6">
         <h1 className="text-xl sm:text-2xl font-semibold mb-4">New Notice</h1>
         {error && <p className="text-red-500 mb-4 text-sm sm:text-base">{error}</p>}
         <div className="mb-4">
@@ -91,11 +69,16 @@ const NewNoticePage = () => {
             className="w-full border border-gray-300 p-2 rounded-md text-xs sm:text-sm md:text-base"
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-6 "> {/* Margin below the message section */}
           <label className="block text-sm font-medium mb-1">Message</label>
-          <div ref={quillRef} className="w-full p-2 border border-gray-300 rounded-md" />
-          {isLoading && <p className="text-gray-500">Loading editor...</p>}
-          {!isLoading && !quillInstance && <p className="text-red-500">Editor failed to load.</p>}
+          <div className="border border-gray-300 rounded-md overflow-hidden">
+            <Quill
+              value={message}
+              onChange={setMessage}
+              modules={quillModules}
+              className="text-xs max-w-screen-xl sm:text-sm md:text-base"
+            />
+          </div>
         </div>
         <button
           type="submit"
@@ -106,6 +89,4 @@ const NewNoticePage = () => {
       </form>
     </div>
   );
-};
-
-export default NewNoticePage;
+}
