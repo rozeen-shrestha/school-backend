@@ -19,6 +19,8 @@ export async function GET() {
     // Fetch all news from the 'news' collection, including the lastEdited field
     const news = await db.collection('news').find({}, { projection: { title: 1, message: 1, lastEdited: 1 } }).toArray();
 
+    console.log("Fetched news:", news); // Debugging statement
+
     return new Response(JSON.stringify(news), {
       status: 200,
       headers: {
