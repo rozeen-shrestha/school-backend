@@ -6,6 +6,7 @@ const dbName = process.env.MONGODB_DB;
 let client;
 let clientPromise;
 
+// Ensure a single instance of MongoClient is created
 if (!clientPromise) {
   client = new MongoClient(uri);
   clientPromise = client.connect();
@@ -16,10 +17,9 @@ export async function GET() {
     const client = await clientPromise;
     const db = client.db(dbName);
 
-    // Fetch all news from the 'news' collection, including the lastEdited field
-    const news = await db.collection('news').find({}, { projection: { title: 1, message: 1, lastEdited: 1 } }).toArray();
 
-    console.log("Fetched news:", news); // Debugging statement
+    // Fetch all news from the 'news' collection
+    const news = await db.collection('news').find({}, { projection: { title: 1, message: 1, lastEdited: 1 } }).toArray();
 
     return new Response(JSON.stringify(news), {
       status: 200,
@@ -32,7 +32,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Error fetching news:", error);
+    console.error("Error fetching news:", error); // Log any errors encountered
     return new Response(JSON.stringify({ error: 'Failed to fetch news' }), {
       status: 500,
       headers: {
