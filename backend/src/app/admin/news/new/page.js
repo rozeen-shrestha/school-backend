@@ -3,52 +3,56 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import 'quill/dist/quill.snow.css'; // Import Quill styles
-import dynamic from 'next/dynamic'; // Dynamically import components
-
-const QuillNoSSRWrapper = dynamic(() => import('quill'), { ssr: false });
 
 const NewNoticePage = () => {
   const quillRef = useRef(null); // Ref for the Quill editor element
-  const quillInstance = useRef(null); // Ref for the Quill instance
+  const [quillInstance, setQuillInstance] = useState(null); // State for the Quill instance
   const [title, setTitle] = useState(''); // State for the notice title
   const [message, setMessage] = useState(''); // State for the notice message
   const [error, setError] = useState(null); // State for error handling
+  const [isLoading, setIsLoading] = useState(true); // State to track loading
   const router = useRouter(); // Next.js router for navigation
 
   useEffect(() => {
     // Ensure Quill is initialized only on the client side
-    if (typeof window !== 'undefined' && quillRef.current && !quillInstance.current) {
-      const Quill = require('quill'); // Import Quill dynamically to avoid SSR issues
+    if (typeof window !== 'undefined' && quillRef.current && !quillInstance) {
+      import('quill').then((Quill) => {
+        const toolbarOptions = [
+          ['bold', 'italic', 'underline', 'strike'], // Formatting buttons
+          ['blockquote', 'code-block'],
+          [{ header: 1 }, { header: 2 }], // Custom header sizes
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{ script: 'sub' }, { script: 'super' }], // Subscript/superscript
+          [{ indent: '-1' }, { indent: '+1' }], // Indentation
+          [{ direction: 'rtl' }], // Text direction
+          [{ size: ['small', false, 'large', 'huge'] }], // Text size options
+          [{ header: [1, 2, 3, 4, 5, 6, false] }], // Header dropdown
+          [{ color: [] }, { background: [] }], // Color options
+          [{ font: [] }],
+          [{ align: [] }],
+          ['clean'], // Clear formatting button
+        ];
 
-      const toolbarOptions = [
-        ['bold', 'italic', 'underline', 'strike'], // Formatting buttons
-        ['blockquote', 'code-block'],
-        [{ 'header': 1 }, { 'header': 2 }], // Custom header sizes
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        [{ 'script': 'sub' }, { 'script': 'super' }], // Subscript/superscript
-        [{ 'indent': '-1' }, { 'indent': '+1' }], // Indentation
-        [{ 'direction': 'rtl' }], // Text direction
-        [{ 'size': ['small', false, 'large', 'huge'] }], // Text size options
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }], // Header dropdown
-        [{ 'color': [] }, { 'background': [] }], // Color options
-        [{ 'font': [] }],
-        [{ 'align': [] }],
-        ['clean'], // Clear formatting button
-      ];
+        const quill = new Quill(quillRef.current, {
+          theme: 'snow',
+          modules: {
+            toolbar: toolbarOptions,
+          },
+        });
 
-      quillInstance.current = new Quill(quillRef.current, {
-        theme: 'snow', // Set the theme for Quill
-        modules: {
-          toolbar: toolbarOptions, // Custom toolbar options
-        },
-      });
+        // Listen for text changes and update the message state
+        quill.on('text-change', () => {
+          setMessage(quill.root.innerHTML);
+        });
 
-      // Listen for text changes and update the message state
-      quillInstance.current.on('text-change', () => {
-        setMessage(quillInstance.current.root.innerHTML);
+        setQuillInstance(quill);
+        setIsLoading(false); // Set loading to false when Quill is initialized
+      }).catch((err) => {
+        console.error('Failed to load Quill:', err);
+        setError('Failed to load the editor. Please refresh the page.');
       });
     }
-  }, []);
+  }, [quillInstance]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,6 +94,8 @@ const NewNoticePage = () => {
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Message</label>
           <div ref={quillRef} className="w-full p-2 border border-gray-300 rounded-md" />
+          {isLoading && <p className="text-gray-500">Loading editor...</p>}
+          {!isLoading && !quillInstance && <p className="text-red-500">Editor failed to load.</p>}
         </div>
         <button
           type="submit"
