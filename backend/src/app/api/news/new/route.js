@@ -40,12 +40,18 @@ export async function POST(request) {
     const client = await clientPromise;
     const db = client.db(dbName);
 
-    // Insert the new news into the 'news' collection
-    const result = await db.collection('news').insertOne({ title, message });
+    // Get the current date and format it as YYYY-MM-DD
+    const currentDate = new Date().toISOString().split('T')[0];
 
-    // MongoDB no longer has `result.ops`, use `result.insertedId` instead
+    // Insert the new news into the 'news' collection with the current date
+    const result = await db.collection('news').insertOne({
+      title,
+      message,
+      lastEdited: currentDate // Add the current date in YYYY-MM-DD format
+    });
+
     return new Response(
-      JSON.stringify({ success: true, data: { _id: result.insertedId, title, message } }),
+      JSON.stringify({ success: true, data: { _id: result.insertedId, title, message, lastEdited: currentDate } }),
       {
         status: 201,
         headers: {

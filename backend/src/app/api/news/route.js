@@ -16,8 +16,8 @@ export async function GET() {
     const client = await clientPromise;
     const db = client.db(dbName);
 
-    // Fetch all news from the 'news' collection
-    const news = await db.collection('news').find().toArray();
+    // Fetch all news from the 'news' collection, including the lastEdited field
+    const news = await db.collection('news').find({}, { projection: { title: 1, message: 1, lastEdited: 1 } }).toArray();
 
     return new Response(JSON.stringify(news), {
       status: 200,
@@ -27,7 +27,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching news:", error);
-    return new Response(JSON.stringify({ error: 'Failed to fetch newss' }), {
+    return new Response(JSON.stringify({ error: 'Failed to fetch news' }), {
       status: 500,
       headers: {
         "Content-Type": "application/json",
