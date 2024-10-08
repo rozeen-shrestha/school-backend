@@ -56,7 +56,7 @@ export default function NewNoticeForm() {
   };
 
   return (
-    <div className="flex items-start justify-start ">
+    <div className="flex items-start justify-start">
       <form onSubmit={handleSubmit} className="w-full max-w-2xl h-full shadow-lg rounded-md  sm:p-6">
         <h1 className="text-xl sm:text-2xl font-semibold mb-4">New Notice</h1>
         {error && <p className="text-red-500 mb-4 text-sm sm:text-base">{error}</p>}
