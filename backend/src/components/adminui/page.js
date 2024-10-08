@@ -53,14 +53,14 @@ const ADMINUI = ({ children }) => {
                 Dashboard
               </Link>
               <Link
-                href="/admin/grades"
+                href="/admin/news"
                 className={`flex items-center gap-4 rounded-xl px-3 py-2 transition-all ${
-                  isActive('/admin/grades') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-primary'
+                  isActive('/admin/news') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-primary'
                 }`}
                 onClick={handleLinkClick}
               >
                 <FileCheck className="h-4 w-4" />
-                Grades
+                news
               </Link>
               <Link
                 href="/admin/attendance"
@@ -124,14 +124,14 @@ const ADMINUI = ({ children }) => {
                   Dashboard
                 </Link>
                 <Link
-                  href="/admin/grades"
+                  href="/admin/news"
                   className={`flex items-center gap-4 rounded-xl px-3 py-2 transition-all ${
-                    isActive('/admin/grades') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-primary'
+                    isActive('/admin/news') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-primary'
                   }`}
                   onClick={handleLinkClick}
                 >
                   <FileCheck className="h-4 w-4" />
-                  Grades
+                  news
                 </Link>
                 <Link
                   href="/admin/attendance"

@@ -1,4 +1,4 @@
-// app/api/auth/[...nextauth]/route.js
+// backend/src/app/api/auth/[...nextauth]/route.js
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -8,18 +8,21 @@ export const authOptions = {
       name: "Credentials",
       credentials: {
         username: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         // Hardcoded credentials for admin
         const user = { id: 1, name: "admin", role: "admin" };
-        if (credentials.username === "admin" && credentials.password === "admin") {
+        if (
+          credentials.username === "admin" &&
+          credentials.password === "admin"
+        ) {
           return user;
         }
         // Return null if credentials are invalid
         return null;
-      }
-    })
+      },
+    }),
   ],
   callbacks: {
     async session({ session, token }) {
@@ -31,13 +34,12 @@ export const authOptions = {
         token.role = user.role; // Add role to token
       }
       return token;
-    }
+    },
   },
   pages: {
-    signIn: "/login"
-  }
+    signIn: "/",
+  },
 };
 
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };
