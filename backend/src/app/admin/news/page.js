@@ -1,185 +1,164 @@
-'use client';
-import { useEffect, useState } from 'react';
+"use client"
+import * as React from "react";
+import IconButton from '@mui/material/IconButton';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useRouter } from 'next/navigation';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableFooter,
-  TablePagination,
-  TableRow,
-  Paper,
-  IconButton,
-  Box
-} from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import FirstPageIcon from '@mui/icons-material/FirstPage';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import LastPageIcon from '@mui/icons-material/LastPage';
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@mui/material";
 
-function TablePaginationActions(props) {
-  const theme = useTheme();
-  const { count, page, rowsPerPage, onPageChange } = props;
-
-  const handleFirstPageButtonClick = (event) => {
-    onPageChange(event, 0);
-  };
-
-  const handleBackButtonClick = (event) => {
-    onPageChange(event, page - 1);
-  };
-
-  const handleNextButtonClick = (event) => {
-    onPageChange(event, page + 1);
-  };
-
-  const handleLastPageButtonClick = (event) => {
-    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-  };
-
-  return (
-    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-      <IconButton
-        onClick={handleFirstPageButtonClick}
-        disabled={page === 0}
-        aria-label="first page"
-      >
-        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
-      </IconButton>
-      <IconButton
-        onClick={handleBackButtonClick}
-        disabled={page === 0}
-        aria-label="previous page"
-      >
-        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-      </IconButton>
-      <IconButton
-        onClick={handleNextButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="next page"
-      >
-        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-      </IconButton>
-      <IconButton
-        onClick={handleLastPageButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="last page"
-      >
-        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
-      </IconButton>
-    </Box>
-  );
-}
-
-export default function NoticeTable() {
+const TailwindTable = () => {
   const router = useRouter();
-  const [news, setNews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [news, setNews] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState('');
+  const [currentId, setCurrentId] = React.useState(null); // Track the current news ID for actions
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = React.useState(false); // Control delete dialog visibility
 
-  useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const response = await fetch('/api/news');
-        if (!response.ok) {
-          throw new Error('Failed to fetch news');
-        }
-
-        const data = await response.json();
-        setNews(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+  const fetchNews = async () => {
+    try {
+      const response = await fetch('/api/news');
+      if (!response.ok) {
+        throw new Error('Failed to fetch news');
       }
-    };
+      const data = await response.json();
+      setNews(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  React.useEffect(() => {
     fetchNews();
   }, []);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  const handleDelete = async () => {
+    try {
+      const response = await fetch('/api/news/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: currentId }), // Send the id in the request body
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete news');
+      }
+
+      // Update state to remove the deleted news from the list
+      setNews((prevNews) => prevNews.filter((item) => item._id !== currentId));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDeleteDialogOpen(false); // Close the dialog after deletion
+      setCurrentId(null); // Reset the current ID
+    }
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const handleEdit = (id) => {
+    router.push(`news/edit/${id}`);
   };
+  const handleNew = () => {
+    router.push(`news/new`);
+    };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+    if (loading) {
+        return (
+          <div className="flex items-center justify-center h-screen">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+          </div>
+        );
+      }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - news.length) : 0;
+      if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
-      <button
-        onClick={() => router.push('/admin/news/new')}
-        className="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-      >
-        Add New
-      </button>
+    <Button variant="outlined" onClick={handleNew}>New News</Button>
+    <div className="w-full py-2 ">
+      <div className="overflow-auto shadow-lg border border-gray-700 rounded-lg">
+        <table className="min-w-full table-auto text-left text-white bg-gray-800">
+          <thead className="sticky top-0 bg-gray-900">
+            <tr className='ltr'>
+              <th className="py-4 ps-2 pe-20 text-xl">Title</th>
+              <th className="py-4 text-sm text-center">Date</th>
+              <th className="py-4 text-sm text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {news.map((row) => (
+              <tr key={row._id} className="border-b border-gray-700 hover:bg-gray-700">
+                <td className="px-4 py-3 whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[200px]">
+                  {row.title}
+                </td>
+                <td className="px-4 py-3 text-center text-xs">
+                  {row.lastEdited ? new Date(row.lastEdited).toLocaleDateString() : 'N/A'}
+                </td>
+                <td className="py-3 text-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <IconButton
+                        aria-label="more"
+                        className="duration-200"
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-10"> {/* Adjusted width to a smaller size */}
+  <DropdownMenuItem onClick={() => handleEdit(row._id)}>Edit</DropdownMenuItem>
+  <DropdownMenuSeparator />
+  <DropdownMenuItem onClick={() => {
+    setCurrentId(row._id); // Set the current ID for deletion
+    setDeleteDialogOpen(true); // Open the delete confirmation dialog
+  }}>
+    Delete
+  </DropdownMenuItem>
+</DropdownMenuContent>
 
-      <TableContainer component={Paper} sx={{ backgroundColor: '#424242' }}>
-        <Table sx={{ minWidth: 500, backgroundColor: '#424242' }} aria-label="custom pagination table">
-          <TableBody>
-            {/* Static Header Row */}
-            <TableRow>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Title</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Last Edited</TableCell>
-              <TableCell />
-            </TableRow>
-            {(rowsPerPage > 0
-              ? news.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : news
-            ).map((newsItem) => (
-              <TableRow key={newsItem._id} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#616161' } }}>
-                <TableCell component="th" scope="row" sx={{ color: 'white' }}>
-                  {newsItem.title}
-                </TableCell>
-                <TableCell sx={{ color: 'white' }}>{newsItem.lastEdited ? new Date(newsItem.lastEdited).toLocaleDateString() : 'N/A'}</TableCell>
-                <TableCell align="right">
-                  <button
-                    onClick={() => router.push(`/admin/news/edit/${newsItem._id}`)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                  >
-                    Edit
-                  </button>
-                </TableCell>
-              </TableRow>
+                  </DropdownMenu>
+                </td>
+              </tr>
             ))}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={3} />
-              </TableRow>
-            )}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                colSpan={3}
-                count={news.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-                sx={{ color: 'white' }}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </TableContainer>
+          </tbody>
+        </table>
+      </div>
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Confirmation</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this news item? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteDialogOpen(false)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
     </div>
   );
-}
+};
+
+export default TailwindTable;

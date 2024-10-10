@@ -12,11 +12,12 @@ if (!clientPromise) {
   clientPromise = client.connect();
 }
 
+export const dynamic = 'force-dynamic'; // Ensure this route is treated as dynamic
+
 export async function GET() {
   try {
     const client = await clientPromise;
     const db = client.db(dbName);
-
 
     // Fetch all news from the 'news' collection
     const news = await db.collection('news').find({}, { projection: { title: 1, message: 1, lastEdited: 1 } }).toArray();

@@ -1,6 +1,6 @@
 'use client'; // Enable client-side code
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import 'quill/dist/quill.snow.css'; // Import Quill styles
 import dynamic from 'next/dynamic';
@@ -8,11 +8,33 @@ import dynamic from 'next/dynamic';
 // Dynamically import the Quill editor
 const Quill = dynamic(() => import('react-quill'), { ssr: false });
 
-export default function NewNewsForm() {
+export default function NewNewsForm({ params }) {
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true); // State for loading
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      setLoading(true); // Start loading
+      try {
+        const res = await fetch(`/api/news/${params.id}`);
+        if (!res.ok) {
+          throw new Error('Failed to fetch News');
+        }
+        const data = await res.json();
+        setTitle(data.title);
+        setMessage(data.message);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
+
+    fetchNews();
+  }, [params.id]); // Fetch when the component mounts or when the id changes
 
   const quillModules = {
     toolbar: [
@@ -35,30 +57,45 @@ export default function NewNewsForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setLoading(true);
 
     try {
-      const res = await fetch('/api/news/new', {
-        method: 'POST',
+      const res = await fetch('/api/news/edit', {
+        method: 'PUT', // Use PUT for updates
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, message }),
+        body: JSON.stringify({ id: params.id, title, message }), // ID remains as is
       });
 
       if (!res.ok) {
-        throw new Error('Failed to create News');
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to update News');
       }
 
+      const responseData = await res.json(); // Optional: Capture the success response
+      console.log(responseData); // Log success response for debugging
       router.push('/admin/news'); // Redirect to news page
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Render a loading animation when loading
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-start justify-start">
-      <form onSubmit={handleSubmit} className="w-full max-w-2xl h-full shadow-lg rounded-md  sm:p-6">
-        <h1 className="text-xl sm:text-2xl font-semibold mb-4">New News</h1>
+      <form onSubmit={handleSubmit} className="w-full max-w-2xl h-full shadow-lg rounded-md sm:p-6">
+        <h1 className="text-xl sm:text-2xl font-semibold mb-4">Edit News</h1>
         {error && <p className="text-red-500 mb-4 text-sm sm:text-base">{error}</p>}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Title</label>
@@ -67,9 +104,10 @@ export default function NewNewsForm() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="w-full border border-gray-300 p-2 rounded-md text-xs sm:text-sm md:text-base"
+            required // Make this field required
           />
         </div>
-        <div className="mb-6 "> {/* Margin below the message section */}
+        <div className="mb-6"> {/* Margin below the message section */}
           <label className="block text-sm font-medium mb-1">Message</label>
           <div className="border border-gray-300 rounded-md overflow-hidden">
             <Quill
@@ -77,6 +115,7 @@ export default function NewNewsForm() {
               onChange={setMessage}
               modules={quillModules}
               className="text-xs max-w-screen-xl sm:text-sm md:text-base"
+              required // Ensure the message is required
             />
           </div>
         </div>
@@ -84,7 +123,7 @@ export default function NewNewsForm() {
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded-md text-xs sm:text-sm md:text-base"
         >
-          Submit
+          Update
         </button>
       </form>
     </div>
