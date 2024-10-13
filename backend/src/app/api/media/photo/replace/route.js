@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
+import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { getToken } from "next-auth/jwt";
-import { MongoClient, ObjectId } from "mongodb";
+import { MongoClient } from "mongodb";
+import { v4 as uuidv4 } from 'uuid';
 
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB;
@@ -15,77 +16,101 @@ if (!clientPromise) {
   clientPromise = client.connect();
 }
 
+export const dynamic = 'force-dynamic';
+
+const isValidImageFile = (file) => {
+  const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  return validTypes.includes(file.type);
+};
+
 export async function POST(request) {
   const token = await getToken({ req: request });
 
-  // Check if user is authenticated
+  // Log the token to check its contents
+  console.log('Token:', token);
+
   if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
     const formData = await request.formData();
-    const file = formData.get('file');
-    const oldImageName = formData.get('oldImageName');
-    const categoryId = formData.get('categoryId');
+    const files = formData.getAll('files');
+    const category = formData.get('category');
 
-    if (!file) {
-      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
+    if (files.length === 0) {
+      return NextResponse.json({ error: 'No files uploaded' }, { status: 400 });
+    }
+
+    if (!category) {
+      return NextResponse.json({ error: 'Category is required' }, { status: 400 });
+    }
+
+    const uploadDir = join(process.cwd(), 'public', 'media', 'photo', category);
+
+    try {
+      await mkdir(uploadDir, { recursive: true });
+    } catch (err) {
+      if (err.code !== 'EEXIST') {
+        console.error('Error creating directory:', err);
+        return NextResponse.json({ error: 'Failed to create upload directory' }, { status: 500 });
+      }
     }
 
     const client = await clientPromise;
     const db = client.db(dbName);
+    const currentDate = new Date().toISOString().split('T')[0];
 
-    // Find the old image in the database
-    const oldImage = await db.collection('uploads').findOne({ filename: oldImageName });
-
-    if (!oldImage) {
-      return NextResponse.json({ error: 'Old image not found' }, { status: 404 });
-    }
-
-    // Delete the old file from the filesystem
-    const oldFilePath = join(process.cwd(), 'public', oldImage.path);
-    await fs.unlink(oldFilePath);
-
-    // Generate a new filename
-    const newFilename = `${Date.now()}-${file.name}`;
-    const category = oldImage.category; // Use the existing category
-    const newRelativePath = `/media/photo/${category}/${newFilename}`;
-    const newFilePath = join(process.cwd(), 'public', newRelativePath);
-
-    // Ensure the directory exists
-    const dir = join(process.cwd(), 'public', 'media', 'photo', category);
-    await fs.mkdir(dir, { recursive: true });
-
-    // Write the new file
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await fs.writeFile(newFilePath, buffer);
-
-    // Update the database record
-    await db.collection('uploads').updateOne(
-      { filename: oldImageName },
-      {
-        $set: {
-          originalFilename: file.name,
-          filename: newFilename,
-          path: newRelativePath,
-          uploader: token.name || 'unknown', // Use the authenticated user's name
-          uploadDate: new Date().toISOString().split('T')[0] // Current date in YYYY-MM-DD format
-        }
+    const uploadResults = await Promise.all(files.map(async (file) => {
+      if (!isValidImageFile(file)) {
+        return { error: `Invalid file type for ${file.name}`, filename: file.name };
       }
-    );
 
-    return NextResponse.json({ message: 'Image replaced successfully' }, { status: 200 });
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const uniqueId = uuidv4();
+      const ext = file.name.split('.').pop();
+      const filename = `${uniqueId}.${ext}`;
+      const filePath = join(uploadDir, filename);
+
+      try {
+        await writeFile(filePath, buffer);
+
+        const result = await db.collection('uploads').insertOne({
+          originalFilename: file.name,
+          filename,
+          path: `/media/photo/${category}/${filename}`,
+          category: category,
+          uploader: token.name || 'unknown', // Assuming token.name contains the username
+          uploadDate: currentDate
+        });
+
+        return {
+          _id: result.insertedId,
+          originalFilename: file.name,
+          filename,
+          path: `/media/photo/${category}/${filename}`,
+          category: category,
+          uploadedBy: token.email || 'unknown',
+          uploader: token.name || 'unknown', // Assuming token.name contains the username
+          uploadDate: currentDate
+        };
+      } catch (err) {
+        console.error('Error processing file:', file.name, err);
+        return { error: `Failed to save file ${file.name}`, filename: file.name };
+      }
+    }));
+
+    const successfulUploads = uploadResults.filter(result => !result.error);
+    const failedUploads = uploadResults.filter(result => result.error);
+
+    return NextResponse.json({
+      message: 'File upload process completed',
+      successfulUploads,
+      failedUploads
+    }, { status: failedUploads.length > 0 ? 207 : 201 });
 
   } catch (error) {
-    console.error('Error processing replace:', error);
+    console.error('Error processing upload:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
