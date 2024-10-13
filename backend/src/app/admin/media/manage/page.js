@@ -22,15 +22,11 @@ const Page = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [replaceLoading, setReplaceLoading] = useState(false);
   const [error, setError] = useState(null);
   const [newCategory, setNewCategory] = useState('');
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [deleteImage, setDeleteImage] = useState(null);
   const [deleteCategoryId, setDeleteCategoryId] = useState(null);
-  const [replaceImage, setReplaceImage] = useState(null);
-  const [replaceCategoryId, setReplaceCategoryId] = useState(null);
-  const [isReplaceDialogOpen, setIsReplaceDialogOpen] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -111,41 +107,6 @@ const Page = () => {
     }
   };
 
-  // Open replace dialog
-  const handleReplaceClick = (imageName, categoryId) => {
-    setReplaceImage(imageName);
-    setReplaceCategoryId(categoryId);
-    setIsReplaceDialogOpen(true);
-  };
-
-  // Handle file selection for replacement
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setReplaceLoading(true);
-      try {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('oldImageName', replaceImage);
-        formData.append('categoryId', replaceCategoryId);
-
-        await axios.post('/api/media/photo/replace', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-
-        fetchCategories();
-      } catch (error) {
-        console.error('Error replacing image:', error);
-        setError('Failed to replace image');
-      } finally {
-        setReplaceLoading(false);
-        setIsReplaceDialogOpen(false);
-      }
-    }
-  };
-
   return (
     <div className='w-full'>
       <div className="flex justify-start mb-4 space-x-4">
@@ -191,7 +152,7 @@ const Page = () => {
                   <CardMedia
                     component="img"
                     height="140"
-                    image={upload.path || 'default-image-path.jpg'}
+                    image={upload.path ? `/api/file${upload.path}` : 'default-image-path.jpg'}
                     alt={upload.originalFilename || 'Image'}
                   />
                 </CardActionArea>
@@ -204,15 +165,6 @@ const Page = () => {
                     disabled={deleteLoading}
                   >
                     {deleteLoading ? 'Deleting...' : 'Delete'}
-                  </Button>
-                  <Button
-                    size="small"
-                    color="primary"
-                    sx={{ flex: 1 }}
-                    onClick={() => handleReplaceClick(upload.filename, cat._id)}
-                    disabled={replaceLoading}
-                  >
-                    {replaceLoading ? 'Replacing...' : 'Replace'}
                   </Button>
                 </CardActions>
               </Card>
@@ -233,26 +185,6 @@ const Page = () => {
             <UIButton onClick={cancelDelete} variant="outlined">Cancel</UIButton>
             <UIButton onClick={confirmDelete} color="red">Delete</UIButton>
           </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Replace Dialog */}
-      <Dialog open={isReplaceDialogOpen} onOpenChange={setIsReplaceDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Replace Image</DialogTitle>
-          </DialogHeader>
-          <p>Select a new image to replace the current one:</p>
-          <input
-            type="file"
-            ref={fileInputRef}
-            style={{ display: 'none' }}
-            onChange={handleFileChange}
-            accept="image/*"
-          />
-          <UIButton onClick={() => fileInputRef.current.click()}>
-            Choose File
-          </UIButton>
         </DialogContent>
       </Dialog>
 

@@ -58,7 +58,7 @@ const List = () => {
                 <CardActionArea onClick={() => handleClickOpen(upload.path)} sx={{ height: '100%' }}>
                   <CardMedia
                     component="img"
-                    image={upload.path || 'default-image-path.jpg'}
+                    image={upload.path ? `/api/file${upload.path}` : 'default-image-path.jpg'}
                     alt={upload.originalFilename || 'Image'}
                     sx={{ objectFit: 'cover', height: '100%' }}
                   />
