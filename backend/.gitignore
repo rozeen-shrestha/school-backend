@@ -34,3 +34,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ignore all folders and files inside backend/public/media/photo
+/backend/public/media/photo/
