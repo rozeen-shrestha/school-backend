@@ -55,7 +55,7 @@ const List = () => {
           <div className="image-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {cat.uploads && cat.uploads.map((upload) => (
               <Card key={upload._id} sx={{ marginBottom: 2 }}>
-                <CardActionArea onClick={() => handleClickOpen(upload.path)} sx={{ height: '100%' }}>
+                <CardActionArea onClick={() => handleClickOpen(`/api/file${upload.path}`)} sx={{ height: '100%' }}>
                   <CardMedia
                     component="img"
                     image={upload.path ? `/api/file${upload.path}` : 'default-image-path.jpg'}

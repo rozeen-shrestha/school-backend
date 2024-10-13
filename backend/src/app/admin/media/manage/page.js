@@ -27,6 +27,7 @@ const Page = () => {
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [deleteImage, setDeleteImage] = useState(null);
   const [deleteCategoryId, setDeleteCategoryId] = useState(null);
+  const [deleteCategoryOpen, setDeleteCategoryOpen] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -107,6 +108,35 @@ const Page = () => {
     }
   };
 
+  // Open confirmation dialog for deleting category
+  const handleDeleteCategoryClick = (categoryId) => {
+    setDeleteCategoryId(categoryId);
+    setDeleteCategoryOpen(true);
+  };
+
+  // Confirm delete category handler
+  const confirmDeleteCategory = async () => {
+    setDeleteLoading(true);
+    try {
+      await axios.delete('/api/media/photo/category/update', {
+        data: { categoryId: deleteCategoryId },
+      });
+      fetchCategories();
+    } catch (error) {
+      console.error('Error deleting category:', error);
+    } finally {
+      setDeleteLoading(false);
+      setDeleteCategoryOpen(false);
+      setDeleteCategoryId(null);
+    }
+  };
+
+  // Cancel delete category action
+  const cancelDeleteCategory = () => {
+    setDeleteCategoryOpen(false);
+    setDeleteCategoryId(null);
+  };
+
   return (
     <div className='w-full'>
       <div className="flex justify-start mb-4 space-x-4">
@@ -136,13 +166,23 @@ const Page = () => {
         <div key={cat._id} className="category-section">
           <div className="flex justify-between items-center">
             <h2>{cat.name}</h2>
-            <UIButton
-              onClick={() => openDialogWithCategory(cat.name)}
-              className="category-button m-4"
-              aria-label={`Upload file to ${cat.name}`}
-            >
-              Add New Image
-            </UIButton>
+            <div className="flex space-x-4">
+              <UIButton
+                onClick={() => openDialogWithCategory(cat.name)}
+                className="category-button m-4"
+                aria-label={`Upload file to ${cat.name}`}
+              >
+                Add New Image
+              </UIButton>
+              <UIButton
+                onClick={() => handleDeleteCategoryClick(cat._id)}
+                className="category-button m-4"
+                aria-label={`Delete ${cat.name}`}
+                color="red"
+              >
+                Delete Category
+              </UIButton>
+            </div>
           </div>
           <Separator />
           <div className="image-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -184,6 +224,20 @@ const Page = () => {
           <div className="flex justify-end space-x-4">
             <UIButton onClick={cancelDelete} variant="outlined">Cancel</UIButton>
             <UIButton onClick={confirmDelete} color="red">Delete</UIButton>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmation Dialog for Deleting Category */}
+      <Dialog open={deleteCategoryOpen} onOpenChange={cancelDeleteCategory}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Delete Category</DialogTitle>
+          </DialogHeader>
+          <p>Are you sure you want to delete this category and all its images?</p>
+          <div className="flex justify-end space-x-4">
+            <UIButton onClick={cancelDeleteCategory} variant="outlined">Cancel</UIButton>
+            <UIButton onClick={confirmDeleteCategory} color="red">Delete</UIButton>
           </div>
         </DialogContent>
       </Dialog>
