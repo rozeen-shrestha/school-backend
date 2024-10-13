@@ -1,0 +1,37 @@
+[
+  {
+    "href": "/admin/dashboard",
+    "label": "Dashboard",
+    "icon": "Home"
+  },
+  {
+    "href": "/admin/news",
+    "label": "News",
+    "icon": "FileCheck",
+    "dropdown": [
+      {
+        "href": "/admin/news/list",
+        "label": "List News"
+      },
+      {
+        "href": "/admin/news/new",
+        "label": "Add News"
+      }
+    ]
+  },
+  {
+    "href": "/admin/media",
+    "label": "Media",
+    "icon": "Image",
+    "dropdown": [
+      {
+        "href": "/admin/media/list",
+        "label": "List Gallery"
+      },
+      {
+        "href": "/admin/media/manage",
+        "label": "Manage Gallery"
+      }
+    ]
+  }
+]
