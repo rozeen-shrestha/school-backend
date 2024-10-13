@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Image, Home, LineChart, CalendarCheck2, Users, FileCheck, Menu, ChevronDown, ChevronUp, PanelLeftClose, PanelRightOpen } from 'lucide-react';
+import { Image, Home, LineChart, CalendarCheck2, Users, FileCheck, Menu, ChevronDown, ChevronUp, ArrowRightFromLine, PanelLeftClose, LibraryBig } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { signOut } from 'next-auth/react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const iconComponents = {
   Home,
+  LibraryBig,
   LineChart,
   CalendarCheck2,
   Users,
@@ -27,8 +28,9 @@ const ADMINUI = ({ children }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
+  // Fix for the "replace" issue, check if path exists
   const isActive = (path) => {
-    if (!pathname) return false;
+    if (!pathname || !path) return false;
     const trimmedPath = pathname.replace(/\/$/, '');
     const trimmedLinkPath = path.replace(/\/$/, '');
     return trimmedPath === trimmedLinkPath || trimmedPath.startsWith(trimmedLinkPath + '/');
@@ -58,11 +60,84 @@ const ADMINUI = ({ children }) => {
     setIsCollapsed(!isCollapsed);
   };
 
+  const renderSidebarContent = (isMobile = false) => (
+    <nav className={`grid items-start px-2 text-sm font-medium lg:px-4 ${isMobile ? 'gap-4' : ''}`}>
+      {sidebarConfig.map((item) => {
+        const IconComponent = iconComponents[item.icon];
+        const isDropdownOpen = openDropdown === item.href;
+
+        if (item.dropdown && (!isCollapsed || isMobile)) {
+          return (
+            <div key={item.href} className="mb-4">
+              <button
+                className={`flex items-center justify-between w-full gap-4 rounded-xl px-3 py-3 transition-all ${
+                  isDropdownOpen || isActive(item.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
+                }`}
+                onClick={() => toggleDropdown(item.href)}
+              >
+                <div className="flex items-center gap-4">
+                  <IconComponent className="h-5 w-5" />
+                  {(!isCollapsed || isMobile) && item.label}
+                </div>
+                <div className="ml-auto">
+                  {isDropdownOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+                </div>
+              </button>
+              <AnimatePresence>
+                {isDropdownOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="ml-6 mt-2"
+                  >
+                    {item.dropdown.map((dropdownItem) => (
+                      // Check if href exists before rendering the Link
+                      dropdownItem.href ? (
+                        <Link
+                          key={dropdownItem.href}
+                          href={dropdownItem.href}
+                          className={`flex items-center gap-4 w-full rounded-xl px-3 py-3 transition-all mb-2 ${
+                            isActive(dropdownItem.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
+                          }`}
+                          onClick={handleLinkClick}
+                        >
+                          {dropdownItem.label}
+                        </Link>
+                      ) : null // Avoid rendering the Link if href is undefined
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        }
+
+        return (
+          // Check if href exists before rendering the Link
+          item.href ? (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-4 w-full rounded-xl px-3 py-3 transition-all mb-4 ${
+                isActive(item.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
+              }`}
+              onClick={handleLinkClick}
+            >
+              <IconComponent className="h-5 w-5" />
+              {(!isCollapsed || isMobile) && item.label}
+            </Link>
+          ) : null // Avoid rendering the Link if href is undefined
+        );
+      })}
+    </nav>
+  );
+
   return (
-    <div className={`grid min-h-screen w-full ${isCollapsed ? 'md:grid-cols-[80px_1fr]' : 'md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]'}`}>
-      {/* Sidebar */}
-      <div className={`hidden border-r bg-muted/40 md:block ${isCollapsed ? 'w-20' : 'w-64'}`}>
-        <div className="flex h-full max-h-screen flex-col gap-2 relative">
+    <div className="flex min-h-screen">
+      {/* Desktop Sidebar */}
+      <div className={`fixed top-0 left-0 h-full border-r bg-muted/40 ${isCollapsed ? 'w-20' : 'w-64'} overflow-y-auto hidden md:block`}>
+        <div className="flex h-full flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold text-white text-lg">
               <motion.span
@@ -75,81 +150,19 @@ const ADMINUI = ({ children }) => {
               </motion.span>
             </Link>
             <button onClick={toggleSidebar} className="ml-auto bg-muted p-2 rounded-full">
-              {isCollapsed ? <PanelRightOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
+              {isCollapsed ? <ArrowRightFromLine className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
             </button>
           </div>
           <div className="flex-1">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              {sidebarConfig.map((item) => {
-                const IconComponent = iconComponents[item.icon];
-                const isDropdownOpen = openDropdown === item.href;
-                if (item.dropdown && !isCollapsed) {
-                  return (
-                    <div key={item.href} className="mb-4">
-                      <button
-                        className={`flex items-center justify-between w-full gap-4 rounded-xl px-3 py-3 transition-all ${
-                          isDropdownOpen || isActive(item.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
-                        }`}
-                        onClick={() => toggleDropdown(item.href)}
-                      >
-                        <div className="flex items-center gap-4">
-                          <IconComponent className="h-5 w-5" />
-                          {!isCollapsed && item.label}
-                        </div>
-                        <div className="ml-auto">
-                          {isDropdownOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-                        </div>
-                      </button>
-                      <AnimatePresence>
-                        {isDropdownOpen && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            className="ml-6 mt-2"
-                          >
-                            {item.dropdown.map((dropdownItem) => (
-                              <Link
-                                key={dropdownItem.href}
-                                href={dropdownItem.href}
-                                className={`flex items-center gap-4 w-full rounded-xl px-3 py-3 transition-all mb-2 ${
-                                  isActive(dropdownItem.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
-                                }`}
-                                onClick={handleLinkClick}
-                              >
-                                {dropdownItem.label}
-                              </Link>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  );
-                }
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`flex items-center gap-4 w-full rounded-xl px-3 py-3 transition-all mb-4 ${
-                      isActive(item.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
-                    }`}
-                    onClick={handleLinkClick}
-                  >
-                    <IconComponent className="h-5 w-5" />
-                    {!isCollapsed && item.label}
-                  </Link>
-                );
-              })}
-            </nav>
+            {renderSidebarContent()}
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-col">
-      <header className="flex h-14 items-center gap-4 px-4 lg:h-[60px] lg:px-6 bg-transparent">
-
-        <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+      <div className={`flex-1 flex flex-col ${isCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
+        <header className="flex h-14 items-center gap-4 px-4 lg:h-[60px] lg:px-6 bg-transparent">
+          <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="shrink-0 md:hidden">
                 <Menu className="h-5 w-5" />
@@ -162,76 +175,19 @@ const ADMINUI = ({ children }) => {
                   <CalendarCheck2 className="h-6 w-6" />
                   <span>SMS V-0.1</span>
                 </Link>
-                {sidebarConfig.map((item) => {
-                  const IconComponent = iconComponents[item.icon];
-                  const isDropdownOpen = openDropdown === item.href;
-                  if (item.dropdown) {
-                    return (
-                      <div key={item.href} className="mb-4">
-                        <button
-                          className={`flex items-center justify-between gap-4 w-full rounded-xl px-3 py-3 transition-all ${
-                            isDropdownOpen || isActive(item.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
-                          }`}
-                          onClick={() => toggleDropdown(item.href)}
-                        >
-                          <div className="flex items-center gap-4 flex-grow">
-                            <IconComponent className="h-5 w-5" />
-                            {item.label}
-                          </div>
-                          <div className="ml-auto">
-                            {isDropdownOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-                          </div>
-                        </button>
-                        <AnimatePresence>
-                          {isDropdownOpen && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              className="ml-6 mt-2"
-                            >
-                              {item.dropdown.map((dropdownItem) => (
-                                <Link
-                                  key={dropdownItem.href}
-                                  href={dropdownItem.href}
-                                  className={`flex items-center gap-4 w-full rounded-xl px-3 py-3 transition-all mb-2 ${
-                                    isActive(dropdownItem.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
-                                  }`}
-                                  onClick={handleLinkClick}
-                                >
-                                  {dropdownItem.label}
-                                </Link>
-                              ))}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    );
-                  }
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`flex items-center gap-4 w-full rounded-xl px-3 py-3 transition-all mb-4 ${
-                        isActive(item.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
-                      }`}
-                      onClick={handleLinkClick}
-                    >
-                      <IconComponent className="h-5 w-5" />
-                      {!isCollapsed && item.label}
-                    </Link>
-                  );
-                })}
+                {renderSidebarContent(true)}
               </nav>
             </SheetContent>
           </Sheet>
           <div className="w-full flex-1"></div>
-          <Button variant="secondary" size="icon" className="rounded-full w-20">
+          <Button variant="secondary" size="icon" className="rounded-full w-20" onClick={() => signOut()}>
             Logout
           </Button>
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          {children}
+        <main className="flex-1 overflow-y-auto">
+          <div className="flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+            {children}
+          </div>
         </main>
       </div>
     </div>

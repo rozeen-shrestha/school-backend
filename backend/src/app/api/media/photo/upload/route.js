@@ -90,7 +90,6 @@ export async function POST(request) {
           filename,
           path: `/media/photo/${category}/${filename}`,
           category: category,
-          uploadedBy: token.email || 'unknown',
           uploader: token.name || 'unknown', // Assuming token.name contains the username
           uploadDate: currentDate
         };

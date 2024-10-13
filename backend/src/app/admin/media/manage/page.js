@@ -28,6 +28,8 @@ const Page = () => {
   const [deleteImage, setDeleteImage] = useState(null);
   const [deleteCategoryId, setDeleteCategoryId] = useState(null);
   const [deleteCategoryOpen, setDeleteCategoryOpen] = useState(false);
+  const [isImageViewOpen, setIsImageViewOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const fileInputRef = useRef(null);
 
@@ -137,6 +139,18 @@ const Page = () => {
     setDeleteCategoryId(null);
   };
 
+  // Open image view dialog
+  const handleImageViewOpen = (image) => {
+    setSelectedImage(image);
+    setIsImageViewOpen(true);
+  };
+
+  // Close image view dialog
+  const handleImageViewClose = () => {
+    setIsImageViewOpen(false);
+    setSelectedImage(null);
+  };
+
   return (
     <div className='w-full'>
       <div className="flex justify-start mb-4 space-x-4">
@@ -187,20 +201,21 @@ const Page = () => {
           <Separator />
           <div className="image-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {cat.uploads && cat.uploads.map((upload) => (
-              <Card key={upload._id} sx={{ maxWidth: 345, marginBottom: 2 }}>
-                <CardActionArea>
+              <Card key={upload._id} sx={{ maxWidth: 345, maxHeight: 345, marginBottom: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', backgroundColor: '#333', color: '#fff' }}>
+                <CardActionArea sx={{ flex: 1 }} onClick={() => handleImageViewOpen(`/api/file${upload.path}`)}>
                   <CardMedia
                     component="img"
                     height="140"
                     image={upload.path ? `/api/file${upload.path}` : 'default-image-path.jpg'}
                     alt={upload.originalFilename || 'Image'}
+                    sx={{ objectFit: 'cover', width: '100%', height: '100%' }}
                   />
                 </CardActionArea>
-                <CardActions>
+                <CardActions sx={{ justifyContent: 'flex-end' }}>
                   <Button
                     size="small"
                     color="primary"
-                    sx={{ flex: 1 }}
+                    sx={{ flex: 1, color: '#fff' }}
                     onClick={() => handleDeleteClick(upload.filename, cat._id)}
                     disabled={deleteLoading}
                   >
@@ -239,6 +254,15 @@ const Page = () => {
             <UIButton onClick={cancelDeleteCategory} variant="outlined">Cancel</UIButton>
             <UIButton onClick={confirmDeleteCategory} color="red">Delete</UIButton>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Image View Dialog */}
+      <Dialog open={isImageViewOpen} onOpenChange={handleImageViewClose} maxWidth="md" fullWidth>
+        <DialogContent sx={{ backgroundColor: '#333', color: '#fff' }}>
+          {selectedImage && (
+            <img src={selectedImage} alt="Selected" style={{ width: '100%', height: 'auto' }} />
+          )}
         </DialogContent>
       </Dialog>
 

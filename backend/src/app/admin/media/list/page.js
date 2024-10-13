@@ -54,7 +54,7 @@ const List = () => {
           <Divider />
           <div className="image-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {cat.uploads && cat.uploads.map((upload) => (
-              <Card key={upload._id} sx={{ marginBottom: 2 }}>
+              <Card key={upload._id} sx={{ marginBottom: 2, maxHeight: 200 }}>
                 <CardActionArea onClick={() => handleClickOpen(`/api/file${upload.path}`)} sx={{ height: '100%' }}>
                   <CardMedia
                     component="img"
@@ -71,7 +71,7 @@ const List = () => {
       ))}
 
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogContent>
+        <DialogContent sx={{ backgroundColor: '#333', color: '#fff' }}>
           {selectedImage && (
             <img src={selectedImage} alt="Selected" style={{ width: '100%', height: 'auto' }} />
           )}

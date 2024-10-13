@@ -1,9 +1,15 @@
+import FlipBook from '@/components/dearflippdf/page'
+import { Input } from '@/components/ui/input'
 import React from 'react'
 
-const Dashboard = () => {
+const page = () => {
   return (
-    <div>Dashboard</div>
+    <div>
+        <Input
+        value="hello"
+        />
+    </div>
   )
 }
 
-export default Dashboard
+export default page

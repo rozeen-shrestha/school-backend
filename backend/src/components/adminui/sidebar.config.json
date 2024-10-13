@@ -33,5 +33,25 @@
         "label": "Manage Gallery"
       }
     ]
+  },
+  {
+    "href": "/admin/elibrary",
+    "label": "E-Library",
+    "icon": "LibraryBig",
+    "dropdown": [
+      {
+        "href": "/admin/elibrary/list",
+        "label": "List Books"
+      },
+      {
+        "href": "/admin/elibrary/manage",
+        "label": "Manage Books"
+      },
+      {
+        "href": "/admin/elibrary/add",
+        "label": "Add Book"
+      }
+
+    ]
   }
 ]
