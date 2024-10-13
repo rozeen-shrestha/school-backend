@@ -12,6 +12,9 @@ if (!clientPromise) {
   clientPromise = client.connect();
 }
 
+// Indicate that the response is dynamic
+export const dynamic = 'force-dynamic';
+
 export async function POST(request) {
   const token = await getToken({ req: request });
 

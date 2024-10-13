@@ -15,6 +15,9 @@ if (!clientPromise) {
   clientPromise = client.connect();
 }
 
+// Indicate that the response is dynamic
+export const dynamic = 'force-dynamic';
+
 export async function DELETE(request) {
   const token = await getToken({ req: request });
 
