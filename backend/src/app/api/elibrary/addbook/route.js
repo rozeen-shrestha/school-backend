@@ -30,7 +30,7 @@ const isValidPdfFile = (file) => file.type === 'application/pdf';
 export async function POST(request) {
   const token = await getToken({ req: request });
 
-  if (!token) {
+  if (token?.role != 'admin') {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

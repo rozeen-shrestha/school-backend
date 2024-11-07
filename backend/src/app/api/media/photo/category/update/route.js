@@ -22,7 +22,7 @@ export const dynamic = 'force-dynamic';
 export async function POST(request) {
   const token = await getToken({ req: request });
 
-  if (!token) {
+  if (token?.role != 'admin') {
     return new Response("Unauthorized", {
       status: 401,
       headers: {
@@ -90,7 +90,7 @@ export async function DELETE(request) {
   const token = await getToken({ req: request });
 
   // Check if user is authenticated
-  if (!token) {
+  if (token?.role != 'admin') {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

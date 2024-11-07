@@ -53,5 +53,20 @@
       }
 
     ]
+  },
+  {
+    "href": "/admin/faculty",
+    "label": "Faculty",
+    "icon": "UserRoundPen",
+    "dropdown": [
+      {
+        "href": "/admin/faculty",
+        "label": "List Faculty"
+      },
+      {
+        "href": "/admin/faculty/manage",
+        "label": "Manage Faculty"
+      }
+    ]
   }
 ]

@@ -22,7 +22,7 @@ export async function DELETE(request) {
   const token = await getToken({ req: request });
 
   // Check if user is authenticated
-  if (!token) {
+  if (token?.role != 'admin') {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -2,6 +2,22 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+// Mock database or data store with two users
+const users = {
+  admin: {
+    id: 1,
+    name: "admin",
+    password: "admin", // Password for admin user
+    role: "admin",     // Role for admin user
+  },
+  user: {
+    id: 2,
+    name: "user",
+    password: "user", // Password for regular user
+    role: "user",         // Role for regular user
+  },
+};
+
 export const authOptions = {
   providers: [
     CredentialsProvider({
@@ -11,14 +27,18 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // Hardcoded credentials for admin
-        const user = { id: 1, name: "admin", role: "admin" };
-        if (
-          credentials.username === "admin" &&
-          credentials.password === "admin"
-        ) {
-          return user;
+        // Find the user by the username
+        const user = users[credentials.username];
+
+        // If the user exists and the password matches, return the user
+        if (user && credentials.password === user.password) {
+          return {
+            id: user.id,
+            name: user.name,
+            role: user.role,
+          };
         }
+
         // Return null if credentials are invalid
         return null;
       },
@@ -26,18 +46,20 @@ export const authOptions = {
   ],
   callbacks: {
     async session({ session, token }) {
-      session.user.role = token.role; // Add role to session
+      // Add the user role to the session object
+      session.user.role = token.role;
       return session;
     },
     async jwt({ token, user }) {
+      // Add the role to the JWT token when logging in
       if (user) {
-        token.role = user.role; // Add role to token
+        token.role = user.role;
       }
       return token;
     },
   },
   pages: {
-    signIn: "/",
+    signIn: "/", // Redirect to sign-in page if not authenticated
   },
 };
 

@@ -15,7 +15,7 @@ if (!clientPromise) {
 export async function POST(request) {
   const token = await getToken({ req: request });
 
-  if (!token) {
+  if (token?.role != 'admin') {
     return new Response("Unauthorized", {
       status: 401,
       headers: {

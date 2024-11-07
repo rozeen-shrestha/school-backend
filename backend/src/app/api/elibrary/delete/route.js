@@ -20,7 +20,7 @@ export const dynamic = 'force-dynamic';
 export async function DELETE(request) {
   const token = await getToken({ req: request });
 
-  if (!token) {
+  if (token?.role != 'admin') {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -19,7 +19,7 @@ if (!clientPromise) {
 export async function PUT(request, { params }) {
   const token = await getToken({ req: request });
 
-  if (!token) {
+  if (token?.role != 'admin') {
     return new Response('Unauthorized', { status: 401 });
   }
 

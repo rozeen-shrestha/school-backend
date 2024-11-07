@@ -19,7 +19,7 @@ export async function PUT(req) { // Change POST to PUT
   const { id, title, message } = await req.json(); // Get data from request body
 
   const token = await getToken({ req });
-  if (!token) {
+  if (token?.role != 'admin'){
     return new Response("Unauthorized", {
       status: 401,
       headers: {

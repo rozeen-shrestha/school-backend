@@ -26,10 +26,8 @@ const isValidImageFile = (file) => {
 export async function POST(request) {
   const token = await getToken({ req: request });
 
-  // Log the token to check its contents
-  console.log('Token:', token);
 
-  if (!token) {
+  if (token?.role != 'admin') {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
