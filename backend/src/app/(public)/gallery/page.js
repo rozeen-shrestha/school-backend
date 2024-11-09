@@ -58,7 +58,7 @@ export default function Page() {
   const getAllImages = () => {
     return categories.flatMap(category =>
       category.uploads.map(upload => ({
-        url: `/api/file/${upload.path}`,
+        url: `/api/file${upload.path}`,
         category: category.name,
         id: `${category.name}-${upload.path}`
       }))
