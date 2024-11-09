@@ -55,17 +55,21 @@
     ]
   },
   {
-    "href": "/admin/faculty",
-    "label": "Faculty",
+    "href": "/admin/teacher",
+    "label": "Teachers",
     "icon": "UserRoundPen",
     "dropdown": [
       {
-        "href": "/admin/faculty",
-        "label": "List Faculty"
+        "href": "/admin/teacher/list",
+        "label": "List Teachers"
       },
       {
-        "href": "/admin/faculty/manage",
-        "label": "Manage Faculty"
+        "href": "/admin/teacher/manage",
+        "label": "Manage Teachers"
+      },
+      {
+        "href": "/admin/teacher/add",
+        "label": "Add Teachers"
       }
     ]
   }

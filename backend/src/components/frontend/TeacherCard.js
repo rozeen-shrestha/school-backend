@@ -1,4 +1,3 @@
-// ./src/components/frontend/TeacherCard.js
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Facebook, Mail, Instagram } from "lucide-react";
@@ -70,7 +69,18 @@ function TeacherCard({ name, subject, description, imageUrl, socials }) {
           </div>
         </div>
 
-        <p className="text-sm text-gray-700 line-clamp-3">{description}</p>
+        {/* Description with Line Clamp and Line Breaks */}
+        <p
+          className="text-sm text-gray-700 whitespace-pre-line overflow-hidden"
+          style={{
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            textOverflow: 'ellipsis'
+          }}
+        >
+          {description}
+        </p>
 
         {/* Bottom decorative line */}
         <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent" />

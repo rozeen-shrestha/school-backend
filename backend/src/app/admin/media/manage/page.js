@@ -10,11 +10,7 @@ import {
 import FileUploadArea from '@/components/media/fileuploadarea';
 import { Button as UIButton } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import CardActionArea from '@mui/material/CardActionArea';
-import CardActions from '@mui/material/CardActions';
+import { Card } from "@/components/ui/card";
 
 const Page = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -201,101 +197,121 @@ const Page = () => {
           <Separator />
           <div className="image-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {cat.uploads && cat.uploads.map((upload) => (
-              <Card key={upload._id} sx={{ maxWidth: 345, maxHeight: 345, marginBottom: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', backgroundColor: '#333', color: '#fff' }}>
-                <CardActionArea sx={{ flex: 1 }} onClick={() => handleImageViewOpen(`/api/file${upload.path}`)}>
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={upload.path ? `/api/file${upload.path}` : 'default-image-path.jpg'}
+              <Card className="group relative overflow-hidden bg-gray-800 hover:shadow-lg transition-all duration-300 max-w-[345px] w-full mx-auto" key={upload._id}>
+                {/* Background pattern */}
+                <div
+                  className="absolute inset-0 opacity-5 bg-[repeating-linear-gradient(45deg,#fff_0,#fff_1px,transparent_0,transparent_50%)] [background-size:10px_10px]"
+                  aria-hidden="true"
+                />
+
+                {/* Image section */}
+                <div className="relative aspect-square overflow-hidden cursor-pointer" onClick={() => handleImageViewOpen(`/api/file${upload.path}`)}>
+                  <img
+                    src={upload.path ? `/api/file${upload.path}` : 'default-image-path.jpg'}
                     alt={upload.originalFilename || 'Image'}
-                    sx={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                </CardActionArea>
-                <CardActions sx={{ justifyContent: 'flex-end' }}>
-                  <Button
-                    size="small"
-                    color="primary"
-                    sx={{ flex: 1, color: '#fff' }}
-                    onClick={() => handleDeleteClick(upload.filename, cat._id)}
-                    disabled={deleteLoading}
-                  >
-                    {deleteLoading ? 'Deleting...' : 'Delete'}
-                  </Button>
-                </CardActions>
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent" />
+                </div>
+
+                {/* Actions section */}
+                <div className="relative p-4">
+                  {/* Decorative lines */}
+                  <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent" />
+
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-300 truncate flex-1">
+                      {upload.originalFilename || 'Image'}
+                    </p>
+                    <UIButton
+                      onClick={() => handleDeleteClick(upload.filename, cat._id)}
+                      disabled={deleteLoading}
+                      variant="destructive"
+                      size="sm"
+                      className="ml-2"
+                    >
+                      {deleteLoading ? 'Deleting...' : 'Delete'}
+                    </UIButton>
+                  </div>
+
+                  {/* Bottom decorative line */}
+                  <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent" />
+                </div>
               </Card>
             ))}
-          </div>
-          <Separator />
-        </div>
-      ))}
+                      </div>
+                    </div>
+                  ))}
 
-      {/* Confirmation Dialog for Deletion */}
-      <Dialog open={confirmDeleteOpen} onOpenChange={cancelDelete}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm Delete</DialogTitle>
-          </DialogHeader>
-          <p>Are you sure you want to delete this image?</p>
-          <div className="flex justify-end space-x-4">
-            <UIButton onClick={cancelDelete} variant="outlined">Cancel</UIButton>
-            <UIButton onClick={confirmDelete} color="red">Delete</UIButton>
-          </div>
-        </DialogContent>
-      </Dialog>
+                  {/* Confirmation Dialog for Deletion */}
+                  <Dialog open={confirmDeleteOpen} onOpenChange={cancelDelete}>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Confirm Delete</DialogTitle>
+                      </DialogHeader>
+                      <p>Are you sure you want to delete this image?</p>
+                      <div className="flex justify-end space-x-4">
+                        <UIButton onClick={cancelDelete} variant="outlined">Cancel</UIButton>
+                        <UIButton onClick={confirmDelete} color="red">Delete</UIButton>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
 
-      {/* Confirmation Dialog for Deleting Category */}
-      <Dialog open={deleteCategoryOpen} onOpenChange={cancelDeleteCategory}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm Delete Category</DialogTitle>
-          </DialogHeader>
-          <p>Are you sure you want to delete this category and all its images?</p>
-          <div className="flex justify-end space-x-4">
-            <UIButton onClick={cancelDeleteCategory} variant="outlined">Cancel</UIButton>
-            <UIButton onClick={confirmDeleteCategory} color="red">Delete</UIButton>
-          </div>
-        </DialogContent>
-      </Dialog>
+                  {/* Confirmation Dialog for Deleting Category */}
+                  <Dialog open={deleteCategoryOpen} onOpenChange={cancelDeleteCategory}>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Confirm Delete Category</DialogTitle>
+                      </DialogHeader>
+                      <p>Are you sure you want to delete this category and all its images?</p>
+                      <div className="flex justify-end space-x-4">
+                        <UIButton onClick={cancelDeleteCategory} variant="outlined">Cancel</UIButton>
+                        <UIButton onClick={confirmDeleteCategory} color="red">Delete</UIButton>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
 
-      {/* Image View Dialog */}
-      <Dialog open={isImageViewOpen} onOpenChange={handleImageViewClose} maxWidth="md" fullWidth>
-        <DialogContent sx={{ backgroundColor: '#333', color: '#fff' }}>
-          {selectedImage && (
-            <img src={selectedImage} alt="Selected" style={{ width: '100%', height: 'auto' }} />
-          )}
-        </DialogContent>
-      </Dialog>
+                  {/* Image View Dialog */}
+                  <Dialog open={isImageViewOpen} onOpenChange={handleImageViewClose}>
+                    <DialogContent>
+                      {selectedImage && (
+                        <img src={selectedImage} alt="Selected" className="w-full h-auto" />
+                      )}
+                    </DialogContent>
+                  </Dialog>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{category ? `Upload a new file to ${category}` : 'Add a new category'}</DialogTitle>
-          </DialogHeader>
-          {category ? (
-            <FileUploadArea
-              api='/api/media/photo/upload'
-              onUploadComplete={handleUploadComplete}
-              category={category}
-            />
-          ) : (
-            <form onSubmit={handleAddCategory}>
-              <input
-                type="text"
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                placeholder="Enter category name"
-                required
-                className="input"
-              />
-              <UIButton type="submit" className="category-button">
-                Add Category
-              </UIButton>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-};
+                  {/* Upload/Add Category Dialog */}
+                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>{category ? `Upload a new file to ${category}` : 'Add a new category'}</DialogTitle>
+                      </DialogHeader>
+                      {category ? (
+                        <FileUploadArea
+                          api='/api/media/photo/upload'
+                          onUploadComplete={handleUploadComplete}
+                          category={category}
+                        />
+                      ) : (
+                        <form onSubmit={handleAddCategory}>
+                          <input
+                            type="text"
+                            value={newCategory}
+                            onChange={(e) => setNewCategory(e.target.value)}
+                            placeholder="Enter category name"
+                            required
+                            className="input"
+                          />
+                          <UIButton type="submit" className="category-button">
+                            Add Category
+                          </UIButton>
+                        </form>
+                      )}
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              );
+            };
 
-export default Page;
+            export default Page;
