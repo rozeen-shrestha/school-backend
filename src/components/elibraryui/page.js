@@ -1,10 +1,25 @@
-'use client'
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Image,UserRoundPen, Home, LineChart, CalendarCheck2, Users, FileCheck, Menu, ChevronDown, ChevronUp, ArrowRightFromLine, PanelLeftClose, LibraryBig } from 'lucide-react';
+import {
+  Image,
+  UserRoundPen,
+  Home,
+  LineChart,
+  CalendarCheck2,
+  Users,
+  FileCheck,
+  Menu,
+  ChevronDown,
+  ChevronUp,
+  ArrowRightFromLine,
+  PanelLeftClose,
+  LibraryBig,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import sidebarConfig from './sidebar.config.json';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,26 +35,30 @@ const iconComponents = {
   Menu,
   ChevronDown,
   ChevronUp,
-  Image
+  Image,
 };
 
-const ADMINUI = ({ children }) => {
+const LIBRARYUI = ({ children }) => {
   const pathname = usePathname();
-
+  const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // Fix for the "replace" issue, check if path exists
+  const isAdmin = session?.user?.role === 'admin';
+
   const isActive = (path) => {
     if (!pathname || !path) return false;
     const trimmedPath = pathname.replace(/\/$/, '');
     const trimmedLinkPath = path.replace(/\/$/, '');
-    return trimmedPath === trimmedLinkPath || trimmedPath.startsWith(trimmedLinkPath + '/');
+    return (
+      trimmedPath === trimmedLinkPath || trimmedPath.startsWith(trimmedLinkPath + '/')
+    );
   };
 
   useEffect(() => {
-    sidebarConfig.forEach((item) => {
+    const allLinks = [...sidebarConfig.user, ...(sidebarConfig.admin || [])];
+    allLinks.forEach((item) => {
       if (item.dropdown) {
         item.dropdown.forEach((dropdownItem) => {
           if (isActive(dropdownItem.href)) {
@@ -62,78 +81,73 @@ const ADMINUI = ({ children }) => {
     setIsCollapsed(!isCollapsed);
   };
 
-  const renderSidebarContent = (isMobile = false) => (
-    <nav className={`grid items-start px-2 text-sm font-medium lg:px-4 ${isMobile ? 'gap-4' : ''}`}>
-      {sidebarConfig.map((item) => {
-        const IconComponent = iconComponents[item.icon];
-        const isDropdownOpen = openDropdown === item.href;
+  const renderSidebarSection = (links, isMobile = false) =>
+    links.map((item) => {
+      const IconComponent = iconComponents[item.icon];
+      const isDropdownOpen = openDropdown === item.href;
 
-        if (item.dropdown && (!isCollapsed || isMobile)) {
-          return (
-            <div key={item.href} className="mb-4">
-              <button
-                className={`flex items-center justify-between w-full gap-4 rounded-xl px-3 py-3 transition-all ${
-                  isDropdownOpen || isActive(item.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
-                }`}
-                onClick={() => toggleDropdown(item.href)}
-              >
-                <div className="flex items-center gap-4">
-                  <IconComponent className="h-5 w-5" />
-                  {(!isCollapsed || isMobile) && item.label}
-                </div>
-                <div className="ml-auto">
-                  {isDropdownOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-                </div>
-              </button>
-              <AnimatePresence>
-                {isDropdownOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="ml-6 mt-2"
-                  >
-                    {item.dropdown.map((dropdownItem) => (
-                      // Check if href exists before rendering the Link
-                      dropdownItem.href ? (
-                        <Link
-                          key={dropdownItem.href}
-                          href={dropdownItem.href}
-                          className={`flex items-center gap-4 w-full rounded-xl px-3 py-3 transition-all mb-2 ${
-                            isActive(dropdownItem.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
-                          }`}
-                          onClick={handleLinkClick}
-                        >
-                          {dropdownItem.label}
-                        </Link>
-                      ) : null // Avoid rendering the Link if href is undefined
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          );
-        }
-
+      if (item.dropdown && (!isCollapsed || isMobile)) {
         return (
-          // Check if href exists before rendering the Link
-          item.href ? (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-4 w-full rounded-xl px-3 py-3 transition-all mb-4 ${
-                isActive(item.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
+          <div key={item.href} className="mb-4">
+            <button
+              className={`flex items-center justify-between w-full gap-4 rounded-xl px-3 py-3 transition-all ${
+                isDropdownOpen || isActive(item.href)
+                  ? 'bg-muted text-foreground'
+                  : 'text-white hover:bg-muted/10'
               }`}
-              onClick={handleLinkClick}
+              onClick={() => toggleDropdown(item.href)}
             >
-              <IconComponent className="h-5 w-5" />
-              {(!isCollapsed || isMobile) && item.label}
-            </Link>
-          ) : null // Avoid rendering the Link if href is undefined
+              <div className="flex items-center gap-4">
+                <IconComponent className="h-5 w-5" />
+                {(!isCollapsed || isMobile) && item.label}
+              </div>
+              <div className="ml-auto">
+                {isDropdownOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+              </div>
+            </button>
+            <AnimatePresence>
+              {isDropdownOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="ml-6 mt-2"
+                >
+                  {item.dropdown.map((dropdownItem) => (
+                    <Link
+                      key={dropdownItem.href}
+                      href={dropdownItem.href}
+                      className={`flex items-center gap-4 w-full rounded-xl px-3 py-3 transition-all mb-2 ${
+                        isActive(dropdownItem.href)
+                          ? 'bg-muted text-foreground'
+                          : 'text-white hover:bg-muted/10'
+                      }`}
+                      onClick={handleLinkClick}
+                    >
+                      {dropdownItem.label}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         );
-      })}
-    </nav>
-  );
+      }
+
+      return (
+        <Link
+          key={item.href}
+          href={item.href}
+          className={`flex items-center gap-4 w-full rounded-xl px-3 py-3 transition-all mb-4 ${
+            isActive(item.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
+          }`}
+          onClick={handleLinkClick}
+        >
+          <IconComponent className="h-5 w-5" />
+          {(!isCollapsed || isMobile) && item.label}
+        </Link>
+      );
+    });
 
   return (
     <div className="flex min-h-screen">
@@ -156,7 +170,12 @@ const ADMINUI = ({ children }) => {
             </button>
           </div>
           <div className="flex-1">
-            {renderSidebarContent()}
+            {renderSidebarSection(sidebarConfig.user)}
+            {isAdmin && (
+              <>
+                {renderSidebarSection(sidebarConfig.admin)}
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -177,7 +196,7 @@ const ADMINUI = ({ children }) => {
                   <CalendarCheck2 className="h-6 w-6" />
                   <span>SMS V-0.1</span>
                 </Link>
-                {renderSidebarContent(true)}
+                {renderSidebarSection([...sidebarConfig.user, ...(isAdmin ? sidebarConfig.admin : [])], true)}
               </nav>
             </SheetContent>
           </Sheet>
@@ -196,4 +215,4 @@ const ADMINUI = ({ children }) => {
   );
 };
 
-export default ADMINUI;
+export default LIBRARYUI;

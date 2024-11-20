@@ -36,4 +36,6 @@ yarn-error.log*
 next-env.d.ts
 
 # ignore all folders and files inside backend/public/media/photo
-/backend/public/media/photo/
+/public/media/photo/
+
+.env
