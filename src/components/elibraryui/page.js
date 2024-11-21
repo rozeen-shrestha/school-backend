@@ -44,7 +44,6 @@ const LIBRARYUI = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
-
   const isAdmin = session?.user?.role === 'admin';
 
   const isActive = (path) => {
@@ -88,21 +87,21 @@ const LIBRARYUI = ({ children }) => {
 
       if (item.dropdown && (!isCollapsed || isMobile)) {
         return (
-          <div key={item.href} className="mb-4">
+          <div key={item.href} className="mb-2">
             <button
-              className={`flex items-center justify-between w-full gap-4 rounded-xl px-3 py-3 transition-all ${
+              className={`flex items-center justify-between w-full gap-2 rounded-lg px-3 py-2 transition-all ${
                 isDropdownOpen || isActive(item.href)
                   ? 'bg-muted text-foreground'
                   : 'text-white hover:bg-muted/10'
               }`}
               onClick={() => toggleDropdown(item.href)}
             >
-              <div className="flex items-center gap-4">
-                <IconComponent className="h-5 w-5" />
+              <div className="flex items-center gap-2">
+                <IconComponent className="h-4 w-4" />
                 {(!isCollapsed || isMobile) && item.label}
               </div>
               <div className="ml-auto">
-                {isDropdownOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+                {isDropdownOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
               </div>
             </button>
             <AnimatePresence>
@@ -111,13 +110,13 @@ const LIBRARYUI = ({ children }) => {
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  className="ml-6 mt-2"
+                  className="ml-4 mt-1"
                 >
                   {item.dropdown.map((dropdownItem) => (
                     <Link
                       key={dropdownItem.href}
                       href={dropdownItem.href}
-                      className={`flex items-center gap-4 w-full rounded-xl px-3 py-3 transition-all mb-2 ${
+                      className={`flex items-center gap-2 w-full rounded-lg px-3 py-2 transition-all mb-1 ${
                         isActive(dropdownItem.href)
                           ? 'bg-muted text-foreground'
                           : 'text-white hover:bg-muted/10'
@@ -138,24 +137,24 @@ const LIBRARYUI = ({ children }) => {
         <Link
           key={item.href}
           href={item.href}
-          className={`flex items-center gap-4 w-full rounded-xl px-3 py-3 transition-all mb-4 ${
+          className={`flex items-center gap-2 w-full rounded-lg px-3 py-2 transition-all mb-2 ${
             isActive(item.href) ? 'bg-muted text-foreground' : 'text-white hover:bg-muted/10'
           }`}
           onClick={handleLinkClick}
         >
-          <IconComponent className="h-5 w-5" />
+          <IconComponent className="h-4 w-4" />
           {(!isCollapsed || isMobile) && item.label}
         </Link>
       );
     });
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-background">
       {/* Desktop Sidebar */}
-      <div className={`fixed top-0 left-0 h-full border-r bg-muted/40 ${isCollapsed ? 'w-20' : 'w-64'} overflow-y-auto hidden md:block`}>
-        <div className="flex h-full flex-col gap-2">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold text-white text-lg">
+      <div className={`fixed top-0 left-0 h-full border-r bg-muted/40 ${isCollapsed ? 'w-16' : 'w-56'} overflow-y-auto hidden md:block`}>
+        <div className="flex h-full flex-col">
+          <div className="flex h-14 items-center border-b px-3">
+            <Link href="/" className="flex items-center gap-2 font-semibold text-white text-base">
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -165,48 +164,44 @@ const LIBRARYUI = ({ children }) => {
                 {isCollapsed ? 'SB' : 'School Backend'}
               </motion.span>
             </Link>
-            <button onClick={toggleSidebar} className="ml-auto bg-muted p-2 rounded-full">
-              {isCollapsed ? <ArrowRightFromLine className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
+            <button onClick={toggleSidebar} className="ml-auto bg-muted p-1 rounded-full">
+              {isCollapsed ? <ArrowRightFromLine className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
             </button>
           </div>
-          <div className="flex-1">
+          <div className="flex-1 overflow-y-auto py-2 px-3">
             {renderSidebarSection(sidebarConfig.user)}
-            {isAdmin && (
-              <>
-                {renderSidebarSection(sidebarConfig.admin)}
-              </>
-            )}
+            {isAdmin && renderSidebarSection(sidebarConfig.admin)}
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className={`flex-1 flex flex-col ${isCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
-        <header className="flex h-14 items-center gap-4 px-4 lg:h-[60px] lg:px-6 bg-transparent">
+      <div className={`flex-1 flex flex-col ${isCollapsed ? 'md:ml-16' : 'md:ml-56'}`}>
+        <header className="flex h-14 items-center gap-4 border-b px-4 bg-background">
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="shrink-0 md:hidden">
-                <Menu className="h-5 w-5" />
+                <Menu className="h-4 w-4" />
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="flex flex-col">
-              <nav className="grid gap-2 text-lg font-medium">
-                <Link href="/" className="flex items-center gap-2 text-lg font-semibold text-white" onClick={handleLinkClick}>
-                  <CalendarCheck2 className="h-6 w-6" />
+            <SheetContent side="left" className="w-[240px] sm:w-[280px]">
+              <nav className="grid gap-2 text-sm">
+                <Link href="/" className="flex items-center gap-2 font-semibold text-foreground" onClick={handleLinkClick}>
+                  <CalendarCheck2 className="h-5 w-5" />
                   <span>SMS V-0.1</span>
                 </Link>
                 {renderSidebarSection([...sidebarConfig.user, ...(isAdmin ? sidebarConfig.admin : [])], true)}
               </nav>
             </SheetContent>
           </Sheet>
-          <div className="w-full flex-1"></div>
-          <Button variant="secondary" size="icon" className="rounded-full w-20" onClick={() => signOut()}>
+          <div className="flex-1" />
+          <Button variant="secondary" size="sm" className="rounded-full" onClick={() => signOut()}>
             Logout
           </Button>
         </header>
         <main className="flex-1 overflow-y-auto">
-          <div className="flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+          <div className="container mx-auto py-4 px-4 sm:px-6 lg:px-8">
             {children}
           </div>
         </main>

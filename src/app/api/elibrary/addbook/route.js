@@ -8,6 +8,9 @@ import { v4 as uuidv4 } from 'uuid';
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB;
 
+// Define storage path inside project root
+const ELIBRARY_STORAGE_PATH = join(process.cwd(), 'elibrary');
+
 let client;
 let clientPromise;
 
@@ -60,49 +63,46 @@ export async function POST(request) {
     }
 
     // Directory paths
-    const coverDir = join(process.cwd(), 'public', 'elibrary', 'cover');
-    const fileDir = join(process.cwd(), 'public', 'elibrary', 'file');
+    const libraryDir = join(ELIBRARY_STORAGE_PATH, 'library');
 
     // Create directories if they don't exist
-    await mkdir(coverDir, { recursive: true });
-    await mkdir(fileDir, { recursive: true });
-
-    const currentDate = new Date().toISOString().split('T')[0];
+    await mkdir(libraryDir, { recursive: true });
+    await mkdir(join(libraryDir, 'covers'), { recursive: true });
+    await mkdir(join(libraryDir, 'books'), { recursive: true });
 
     // Handle cover image upload
     const coverBuffer = Buffer.from(await coverImage.arrayBuffer());
     const coverUniqueId = uuidv4();
     const coverExt = coverImage.name.split('.').pop();
     const coverFilename = `${coverUniqueId}.${coverExt}`;
-    const coverPath = join(coverDir, coverFilename);
+    const coverPath = join(libraryDir, 'covers', coverFilename);
 
     await writeFile(coverPath, coverBuffer);
-    const coverImageUrl = `/elibrary/cover/${coverFilename}`;
+    const coverImageUrl = `/api/libraryfiles/covers/${coverFilename}`;
 
     // Handle PDF upload
     const pdfBuffer = Buffer.from(await pdfFile.arrayBuffer());
     const pdfUniqueId = uuidv4();
     const pdfFilename = `${pdfUniqueId}.pdf`;
-    const pdfPath = join(fileDir, pdfFilename);
+    const pdfPath = join(libraryDir, 'books', pdfFilename);
 
     await writeFile(pdfPath, pdfBuffer);
-    const pdfUrl = `/elibrary/file/${pdfFilename}`;
+    const pdfUrl = `/api/libraryfiles/books/${pdfFilename}`;
 
     const client = await clientPromise;
     const db = client.db(dbName);
 
-    // Get the highest existing bookId
     const highestBook = await db.collection('books')
       .find()
-      .sort({ bookId: -1 })
+      .sort({ BookId: -1 })
       .limit(1)
       .toArray();
 
-    const newBookId = highestBook.length > 0 ? highestBook[0].bookId + 1 : 1; // Start at 1 if no books exist
+    const newBookId = highestBook.length > 0 ? highestBook[0].BookId + 1 : 1;
 
     // Insert new book into the Books collection
     const result = await db.collection('books').insertOne({
-      BookId: newBookId, // Assign the new bookId
+      BookId: newBookId,
       title,
       author,
       ISBN,
@@ -113,7 +113,7 @@ export async function POST(request) {
       description,
       coverImageUrl,
       pdfUrl,
-      addedBy: token.sub, // Assuming token.sub is the admin ID
+      addedBy: token.sub,
       addedAt: new Date(),
       lastUpdated: new Date(),
     });

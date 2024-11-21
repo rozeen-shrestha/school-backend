@@ -7,6 +7,9 @@ import { MongoClient, ObjectId } from "mongodb";
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB;
 
+// Define storage path inside project root
+const ELIBRARY_STORAGE_PATH = join(process.cwd(), 'elibrary');
+
 let client;
 let clientPromise;
 
@@ -42,10 +45,13 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'Book not found' }, { status: 404 });
     }
 
+    // Define library directory
+    const libraryDir = join(ELIBRARY_STORAGE_PATH, 'library');
+
     // Delete associated files
     const deleteFilePromises = [
-      ...imageNames.map(imageName => unlink(join(process.cwd(), 'public', 'elibrary', 'cover', imageName))),
-      ...pdfNames.map(pdfName => unlink(join(process.cwd(), 'public', 'elibrary', 'file', pdfName)))
+      ...imageNames.map(imageName => unlink(join(libraryDir, 'covers', imageName))),
+      ...pdfNames.map(pdfName => unlink(join(libraryDir, 'books', pdfName)))
     ];
 
     await Promise.all(deleteFilePromises);

@@ -1,13 +1,13 @@
 {
     "user": [
       {
-        "href": "/user/dashboard",
+        "href": "/elibrary/dashboard",
         "label": "Dashboard",
         "icon": "Home"
       },
       {
-        "href": "/user/profile",
-        "label": "Profile",
+        "href": "/elibrary/book",
+        "label": "Book Catalog",
         "icon": "UserRoundPen"
       }
     ],

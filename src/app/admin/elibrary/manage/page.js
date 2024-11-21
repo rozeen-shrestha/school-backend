@@ -141,7 +141,7 @@ export default function Books() {
               <TableCell className="p-2">
                 <div className="flex items-center">
                   <img
-                    src={book.coverImageUrl ? `/api/file${book.coverImageUrl}` : '/path/to/fallback/image.jpg'} // Fallback image
+                    src={book.coverImageUrl ? `${book.coverImageUrl}` : '/path/to/fallback/image.jpg'} // Fallback image
                     alt={book.title}
                     className="object-cover w-10 h-14 sm:w-12 sm:h-16"
                   />

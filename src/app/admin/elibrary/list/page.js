@@ -120,7 +120,7 @@ const BookTable = () => {
               .map((book) => (
                 <tr key={book._id} className="border-b border-gray-700 hover:bg-gray-700">
                   <td className="hidden md:table-cell px-4 py-3">
-                    <img src={`/api/file/${book.coverImageUrl}`} alt={book.title} className="h-16 w-16 object-cover" />
+                    <img src={`${book.coverImageUrl}`} alt={book.title} className="h-16 w-16 object-cover" />
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[200px]">
                     {book.title}
