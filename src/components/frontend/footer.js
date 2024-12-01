@@ -1,132 +1,100 @@
-'use client'
+'use client'; 
 
 import React from 'react';
-import { useState } from 'react';
-import { Map, Phone, Mail, Facebook, Twitter } from 'lucide-react';
 
 const Footer = () => {
-  const importantLinks = [
-    { title: "GoN Official Portal", url: "http://nepal.gov.np/" },
-    { title: "Office of the Prime Minister and Council of Ministers", url: "https://www.opmcm.gov.np/" },
-    { title: "Ministry of Education, Science & Technology", url: "https://moest.gov.np" },
-    { title: "Electronic Procurement System (e-GP System)", url: "https://bolptra.gov.np" },
-    { title: "Integrated Office Management System", url: "http://gioms.gov.np" },
-    { title: "IEMIS System", url: "https://emis.cehrd.gov.np" },
+  const quickLinks = [
+    { label: 'Home', url: '/' },
+    { label: 'Our Programs', url: '/programs' },
+    { label: 'Our Services', url: '/services' },
+    { label: 'Our Teachers', url: '/teachers' },
+    { label: 'Our Achievements', url: '/achievements' },
+    { label: 'Events', url: '/events' },
+    { label: 'News', url: '/news' },
+    { label: 'Contact', url: '/contact' },
+  ];
+
+  const relianceNetworkLinks = [
+    { label: 'Facebook', url: 'https://riacollege.edu.np' },
   ];
 
   return (
-    <footer className="relative mt-5 bg-white">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Logo Section */}
-          <div className="flex items-start space-x-4">
-            <div className="w-16 h-16">
-              <img
-                src="https://giwmscdnone.gov.np/static/assets/image/Emblem_of_Nepal.png"
-                alt="Nepal Emblem"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold">Center for Education and Human Resource Development</h4>
-              <p className="text-gray-600">Sanothimi, Bhaktapur</p>
-            </div>
-          </div>
-
-          {/* Office Hours Section */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold">Office hours</h4>
-
-            <div className="space-y-4">
-              <div>
-                <h5 className="font-medium text-gray-700">Winter (Kartik 16 to Magh 15)</h5>
-                <div className="mt-2 space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Sunday - Thursday</span>
-                    <span className="text-gray-600">10:00 A.M. - 4:00 P.M.</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Friday</span>
-                    <span className="text-gray-600">10:00 A.M. - 3:00 P.M.</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t pt-4">
-                <h5 className="font-medium text-gray-700">Summer (Magh 16 to Kartik 15)</h5>
-                <div className="mt-2 space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Sunday - Thursday</span>
-                    <span className="text-gray-600">10:00 A.M. - 5:00 P.M.</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Friday</span>
-                    <span className="text-gray-600">10:00 A.M. - 3:00 P.M.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Important Links Section */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Important Links</h4>
-            <ul className="space-y-2">
-              {importantLinks.map((link, index) => (
-                <li key={index}>
-                  <a
-                    href={link.url}
-                    className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
-                  >
-                    {link.title}
+    <footer className="bg-blue-900 text-white mt-auto">
+      <div className="container mx-auto px-4 py-8">
+        <div className="footer-top border-b border-gray-700 pb-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="aos-init aos-animate flex flex-col items-center text-center" data-aos="fade-in" data-aos-duration="1050">
+                <img 
+                  src="/api/file/IMG/Logo.jpg" 
+                  width="150px" 
+                  height="150px" 
+                  className="img-fluid object-contain" 
+                  alt="Logo" 
+                />
+              <p className="text-lg font-semibold">Shree Saraswati Secondary School</p>
+              <ul className="social-icon flex space-x-3 mt-3">
+                <li>
+                  <a href="https://www.facebook.com/relianceintlacademy" target="_blank" rel="noopener noreferrer">
+                    <i className="fa fa-facebook-f"></i>
                   </a>
                 </li>
-              ))}
-            </ul>
+              </ul>
+            </div>
+
+            <div className="aos-init aos-animate" data-aos="fade-in" data-aos-duration="550">
+              <h5 className="font-semibold mb-3">Quick Links</h5>
+              <ul>
+                {quickLinks.map((link, index) => (
+                  <li key={index}>
+                    <a href={link.url} className="flex items-center text-gray-300 hover:text-white mb-2">
+                      <i className="fa fa-angle-double-right mr-2"></i>{link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="aos-init aos-animate" data-aos="fade-in" data-aos-duration="1050">
+              <h5 className="font-semibold mb-3">
+                <a href="https://ria.edu.np" target="_blank" rel="noopener noreferrer" className="text-white">
+                  Social Network 
+                </a>
+              </h5>
+              <ul>
+                {relianceNetworkLinks.map((link, index) => (
+                  <li key={index}>
+                    <a href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-300 hover:text-white mb-2">
+                      <i className="fa fa-angle-double-right mr-2"></i>{link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="aos-init aos-animate" data-aos="fade-in" data-aos-duration="1050">
+              <h5 className="font-semibold mb-3">Contact Us</h5>
+              <ul className="address-icon">
+                <li className="flex items-center text-gray-300 mb-3">
+                  <i className="fa fa-map-marker mr-3 text-orange-400"></i>Dakaha-4, Sindhuli, Nepal
+                </li>
+                <li className="flex items-center text-gray-300 mb-3">
+                  <i className="fa fa-phone mr-3 text-orange-400"></i>981199494 / 9707432740
+                </li>
+                <li className="flex items-center text-gray-300 mb-3">
+                  <i className="fa fa-envelope mr-3 text-orange-400"></i>sssdakaha@gmail.com
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="mt-8 pt-8 border-t">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            {/* Social Icons */}
-            <div className="flex space-x-4">
-              <a href="#" className="text-gray-600 hover:text-blue-600">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-600 hover:text-blue-600">
-                <Twitter className="w-5 h-5" />
-              </a>
-            </div>
-
-            {/* Contact Information */}
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
-              <div className="flex items-center space-x-2 text-gray-600">
-                <Map className="w-4 h-4" />
-                <span>Sanothimi, Bhaktapur</span>
-              </div>
-
-              <a href="mailto:info@cehrd.gov.np" className="flex items-center space-x-2 text-gray-600 hover:text-blue-600">
-                <Mail className="w-4 h-4" />
-                <span>info@cehrd.gov.np</span>
-              </a>
-
-              <a href="tel:977-1-6631075" className="flex items-center space-x-2 text-gray-600 hover:text-blue-600">
-                <Phone className="w-4 h-4" />
-                <span>977-1-6631075</span>
-              </a>
-            </div>
-          </div>
+        <div className="bottom-footer py-3 flex justify-between items-center">
+          <p className="mb-0 text-gray-400">
+            <b>Copyright ©</b> <a href="#" target="_blank" rel="noopener noreferrer" className="text-white">Shree Saraswati Secondary School</a>
+          </p>
+          <ul className="list-inline mb-0">
+          </ul>
         </div>
-      </div>
-
-      {/* Bottom Image */}
-      <div className="w-full h-16 mt-8">
-        <img
-          src="https://giwmscdnone.gov.np/media/albums/topbg_CUCDohGKGe_VjmdWXC4XS_L2dmvC8XO5.png"
-          alt="Footer decoration"
-          className="w-full h-full object-cover"
-        />
       </div>
     </footer>
   );

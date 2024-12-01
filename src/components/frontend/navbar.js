@@ -2,9 +2,102 @@
 
 import React, { useState, useContext, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Globe } from "lucide-react";
 import { LanguageContext } from "@/components/LanguageContext";
 
+// Scrolling News Ticker Component
+const ScrollingNewsTicker = ({ news, language }) => {
+  const [position, setPosition] = useState(0);
+
+  useEffect(() => {
+    const tickerContainer = document.getElementById("news-ticker-container");
+    const tickerContent = document.getElementById("news-ticker-content");
+
+    if (!tickerContainer || !tickerContent) return;
+
+    const containerWidth = tickerContainer.offsetWidth;
+    const contentWidth = tickerContent.offsetWidth;
+
+    const animate = () => {
+      setPosition((prev) =>
+        prev <= -contentWidth ? containerWidth : prev - 1
+      );
+    };
+
+    const intervalId = setInterval(animate, 20);
+    return () => clearInterval(intervalId);
+  }, [news]);
+
+  return (
+    <div
+      id="news-ticker-container"
+      className="relative w-full h-full overflow-hidden flex items-center justify-center"
+    >
+      <div
+        id="news-ticker-content"
+        className="absolute whitespace-nowrap flex"
+        style={{
+          transform: `translateX(${position}px)`,
+          transition: "transform linear",
+        }}
+      >
+        {news.map((item, index) => (
+          <span key={index} className="mr-10 text-yellow-200 text-sm">
+            {item[language]}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Language Dropdown Component
+const LanguageDropdown = () => {
+  const { language, toggleLanguage } = useContext(LanguageContext);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const languages = [
+    { code: "en", name: "English" },
+    { code: "np", name: "नेपाली" },
+  ];
+
+  const handleLanguageChange = (newLanguage) => {
+    if (newLanguage !== language) {
+      toggleLanguage();
+    }
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center space-x-2 text-white hover:text-blue-200 transition-colors duration-200"
+      >
+        <Globe size={20} />
+        <span className="text-sm">{language === "en" ? "EN" : "NP"}</span>
+      </button>
+
+      {isOpen && (
+        <div className="absolute right-0 top-full mt-2 w-32 bg-white shadow-lg rounded-md overflow-hidden z-50">
+          {languages.map((lang) => (
+            <button
+              key={lang.code}
+              onClick={() => handleLanguageChange(lang.code)}
+              className={`w-full text-left px-4 py-2 hover:bg-blue-100 ${
+                language === lang.code ? "bg-blue-50 font-semibold" : ""
+              } text-black`}
+            >
+              {lang.name}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Navbar Component
 const Navbar = () => {
   const LogoUrl = "/api/file/Logo.jpg";
   const [isOpen, setIsOpen] = useState(false);
@@ -21,46 +114,43 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleMenu = () => setIsOpen(!isOpen);
+  const closeMenu = () => setIsOpen(false);
 
-  // Add closeMenu function after toggleMenu
-  const closeMenu = () => {
-    setIsOpen(false);
-  };
-
-  // Combined content structure
   const content = {
     schoolName: {
       en: "Shree Saraswati Secondary School",
-      np: "श्री सरस्वती म��ध्यमिक विद्याल��",
+      np: "श्री सरस्वती माध्यमिक विद्यालय",
     },
     address: {
       en: "Dakaha-4, Sindhuli, Nepal",
       np: "डाकाहा-४, सिन्धुली, नेपाल",
     },
     notice: { en: "Important Notice", np: "महत्वपूर्ण सूचना" },
-    login: { en: "Login", np: "लगइन" },
-    signup: { en: "Signup", np: "साइन अप" },
+    news: [
+      { en: "Annual Sports Day Announced", np: "वार्षिक खेल दिवस घोषित" },
+      { en: "Science Exhibition Next Month", np: "अगले महीने विज्ञान प्रदर्शनी" },
+      { en: "New Computer Lab Inauguration", np: "नई कंप्यूटर प्रयोगशाला का उद्घाटन" },
+      { en: "Scholarship Applications Open", np: "छात्रवृत्ति आवेदन खुले" },
+    ],
     nav: {
       home: { en: "Home", np: "मुख्य पृष्ठ", link: "/", id: "home" },
-      about: {
-        en: "About Us",
-        np: "हाम्रो बारेमा",
-        link: "/about",
-        id: "about",
-      },
       faculty: {
-        en: "Our Faculty",
+        en: "Our Programs",
         np: "हाम्रो संकाय",
-        link: "/faculty",
-        id: "faculty",
+        link: "/programs",
+        id: "program",
+      },
+      services: {
+        en: "Our Services",
+        np: "हाम्रो सेवाहरू",
+        link: "/services",
+        id: "service",
       },
       teacher: {
         en: "Our Teachers",
         np: "हाम्रो शिक्षक",
-        link: "/teacher",
+        link: "/teachers",
         id: "teacher",
       },
       achievements: {
@@ -71,7 +161,8 @@ const Navbar = () => {
       },
       events: { en: "Events", np: "घटना", link: "/events", id: "events" },
       news: { en: "News", np: "समाचार", link: "/news", id: "news" },
-      contact: {en: "Contact",
+      contact: {
+        en: "Contact",
         np: "सम्पर्क",
         link: "/contact",
         id: "contact",
@@ -79,48 +170,43 @@ const Navbar = () => {
     },
   };
 
-  // Helper function to get text based on current language
   const getText = (contentObj) => contentObj[language];
-
-  // Navigation items array for easy mapping
   const navItems = Object.values(content.nav);
 
   return (
     <div className="relative">
       <div className="w-full z-50 bg-blue-800 text-white fixed top-0 transition-all duration-300 border-0 shadow-none">
-        {/* Top bar - Only shown when not scrolled */}
         {!isScrolled && (
           <div className="container mx-auto transition-all duration-300">
             <div className="px-4 py-4 flex justify-between items-center">
               <div className="flex items-center space-x-4">
                 <img
-                  src={LogoUrl}
+                  src="/api/file/IMG/Logo.jpg"
                   alt="Logo"
                   className="w-12 h-12 rounded-full shadow-lg"
                 />
-                <div className="md:block">
-                  {" "}
-                  {/* Remove 'hidden' class */}
-                  <h1 className="font-bold text-lg leading-tight md:text-lg text-sm">
-                    {getText(content.schoolName)}
-                  </h1>
-                  <p className="text-sm text-gray-200 hidden md:block">
-                    {getText(content.address)}
-                  </p>
+                <div className="flex items-center space-x-4">
+                  <div className="md:block">
+                    <h1 className="font-bold text-lg leading-tight md:text-lg text-sm">
+                      {getText(content.schoolName)}
+                    </h1>
+                    <p className="text-sm text-gray-200 hidden md:block">
+                      {getText(content.address)}
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <p className="font-bold text-xl pl-6 hidden md:block">
+                      {getText(content.notice)}
+                    </p>
+                    <div className=" mt-2 hidden md:block w-96 h-6 overflow-hidden">
+                      <ScrollingNewsTicker news={content.news} language={language} />
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="hidden md:block text-center">
-                <p className="font-bold text-lg">{getText(content.notice)}</p>
-              </div>
-
-              <div className="hidden md:flex items-center space-x-3">
-                <button className="bg-blue-700 hover:bg-blue-600 text-white px-6 py-2 rounded-md transition-colors duration-200 font-semibold text-sm">
-                  {getText(content.login)}
-                </button>
-                <button className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-md transition-colors duration-200 font-semibold text-sm">
-                  {getText(content.signup)}
-                </button>
+              <div className="hidden md:block">
+                <LanguageDropdown />
               </div>
 
               <button
@@ -133,7 +219,6 @@ const Navbar = () => {
           </div>
         )}
 
-        {/* Navigation bar */}
         <div
           className={`container mx-auto transition-all duration-300 ${
             isScrolled ? "py-3" : "py-2 bg-blue-800"
@@ -143,23 +228,26 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-8 w-full">
               {isScrolled && (
                 <img
-                  src={LogoUrl}
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s"
                   alt="Logo"
                   className="w-10 h-10 rounded-full shadow-lg"
                 />
               )}
 
-              <nav className="flex space-x-8">
+              <nav className="flex space-x-8 flex-grow">
                 {navItems.map((item) => (
                   <Link
                     key={item.id}
                     href={item.link}
-                    className="text-white hover:text-blue-200 transition-colors duration-200 font-medium"
+                    className="text-white hover:text-blue-200 transition-colors duration-200 font-medium whitespace-nowrap"
                   >
                     {getText(item)}
                   </Link>
                 ))}
               </nav>
+
+              <div className="flex-shrink-0">
+              </div>
             </div>
 
             {isScrolled && (
@@ -170,33 +258,28 @@ const Navbar = () => {
                     alt="Logo"
                     className="w-10 h-10 rounded-full shadow-lg"
                   />
-                  <h2 className="text-sm font-medium">
-                    {getText(content.schoolName)}
-                  </h2>
+                  <h2 className="text-sm font-medium">{getText(content.schoolName)}</h2>
                 </div>
-                <button
-                  onClick={toggleMenu}
-                  className="p-2 hover:bg-blue-700 rounded-md transition-colors duration-200"
-                >
-                  {isOpen ? <X size={24} /> : <Menu size={24} />}
-                </button>
+                <div className="flex items-center space-x-3">
+                  <LanguageDropdown />
+                  <button
+                    onClick={toggleMenu}
+                    className="p-2 hover:bg-blue-700 rounded-md transition-colors duration-200"
+                  >
+                    {isOpen ? <X size={24} /> : <Menu size={24} />}
+                  </button>
+                </div>
               </div>
             )}
 
             {isScrolled && (
-              <div className="hidden md:flex items-center space-x-3">
-                <button className="bg-blue-700 hover:bg-blue-600 text-white px-6 py-2 rounded-md transition-colors duration-200 font-semibold text-sm">
-                  {getText(content.login)}
-                </button>
-                <button className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-md transition-colors duration-200 font-semibold text-sm">
-                  {getText(content.signup)}
-                </button>
+              <div className="hidden md:flex items-center justify-end w-full space-x-4">
+                <LanguageDropdown />
               </div>
             )}
           </div>
         </div>
 
-        {/* Mobile menu */}
         <div
           className={`md:hidden transition-all duration-300 overflow-hidden ${
             isOpen ? "max-h-screen" : "max-h-0"
@@ -208,20 +291,11 @@ const Navbar = () => {
                 key={item.id}
                 href={item.link}
                 onClick={closeMenu}
-                className="block py-3 px-4 hover:bg-blue-800 rounded-md transition-colors duration-200"
+                className="block py-3 px-4 hover:bg-blue-800 rounded-md transition-colors duration-200 min-w-[200px] whitespace-nowrap"
               >
                 {getText(item)}
               </Link>
             ))}
-
-            <div className="py-4 space-y-2 px-4">
-              <button className="w-full bg-blue-700 hover:bg-blue-600 text-white px-6 py-2 rounded-md transition-colors duration-200 font-semibold text-sm">
-                {getText(content.login)}
-              </button>
-              <button className="w-full bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-md transition-colors duration-200 font-semibold text-sm">
-                {getText(content.signup)}
-              </button>
-            </div>
           </nav>
         </div>
       </div>

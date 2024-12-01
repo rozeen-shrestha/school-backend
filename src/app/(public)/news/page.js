@@ -29,11 +29,16 @@ const Page = () => {
     }, []);
 
     return (
-        <div>
+        <>
+        <div className="py-12 px-4 sm:px-6 lg:px-8"></div>
+        <div className="relative mb-12 text-center">
+            <h1 className="relative text-4xl font-bold text-gray-900 mb-2">News</h1>
+            <p className="relative text-gray-600">View the latest news</p>
+          </div>
              <div className="py-12 px-4 sm:px-6 lg:px-8">
             <NewsGrid newsData={newsData} />
             </div>
-        </div>
+        </>
     )
 }
 

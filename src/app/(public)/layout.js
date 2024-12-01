@@ -2,6 +2,7 @@
 import './public.css';
 import { LanguageProvider } from '@/components/LanguageContext';
 import TranslateButton from '@/components/TranslateButton';
+import Footer from '@/components/frontend/footer';
 import Navbar from '@/components/frontend/navbar';
 
 export default function RootLayout({ children }) {
@@ -11,7 +12,7 @@ export default function RootLayout({ children }) {
         <LanguageProvider>
           <Navbar />
           {children}
-          <TranslateButton /> {/* Ensure this line is present */}
+          <Footer/>
         </LanguageProvider>
       </body>
     </html>

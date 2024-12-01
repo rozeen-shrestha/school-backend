@@ -66,6 +66,7 @@ export default function TeachersPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="py-12 px-4 sm:px-6 lg:px-8">
+      <div className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="relative mb-12 text-center" data-aos="fade-down">
             <div className="absolute inset-0 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:16px_16px] opacity-30" />
@@ -96,6 +97,7 @@ export default function TeachersPage() {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 }
