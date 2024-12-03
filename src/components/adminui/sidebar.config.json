@@ -60,10 +60,6 @@
     "icon": "UserRoundPen",
     "dropdown": [
       {
-        "href": "/admin/teacher/list",
-        "label": "List Teachers"
-      },
-      {
         "href": "/admin/teacher/manage",
         "label": "Manage Teachers"
       },

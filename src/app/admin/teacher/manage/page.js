@@ -25,8 +25,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import Fuse from 'fuse.js';
+import { Router } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const TeacherAdminPanel = () => {
+    const router = useRouter();
   const [teachers, setTeachers] = useState([]);  // Initialize as empty array
   const [loading, setLoading] = useState(true);
 
@@ -77,8 +80,7 @@ const TeacherAdminPanel = () => {
   };
 
   const handleEdit = async (teacherId) => {
-    // Implement edit functionality
-    console.log("Edit teacher:", teacherId);
+    router.push(`/admin/teacher/edit/${teacherId}`)
   };
 
   const handleDelete = async (teacherId) => {
@@ -99,8 +101,7 @@ const TeacherAdminPanel = () => {
 
 
   const handleAddNew = () => {
-    // Implement add new teacher functionality
-    console.log("Add new teacher");
+    router.push(`/admin/teacher/add`)
   };
 
   if (loading) {
@@ -194,7 +195,7 @@ const TeacherAdminPanel = () => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => handleEdit(teacher.id)}
+          onClick={() => handleEdit(teacher._id)}
           className="mr-2"
         >
           <Pencil className="w-4 h-4 mr-2" />

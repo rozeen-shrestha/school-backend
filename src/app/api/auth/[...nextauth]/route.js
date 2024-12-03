@@ -10,9 +10,9 @@ const users = {
     password: "admin", // Password for admin user
     role: "admin",     // Role for admin user
     permissions: {
-      books: ['all'], // Full book access
-      tags: ['rare', 'academic', 'research', 'general'],
-      pdfs:['']
+      books: ['all'],
+      tags: ['all'],
+      pdfs:['all']
     }
   },
   user: {
@@ -23,7 +23,7 @@ const users = {
     permissions: {
       books: ['6710dfd13989c1e05a106e16'], // Full book access
       tags: [],
-      pdfs:['all']
+      pdfs:['']
     }
   },
 };
