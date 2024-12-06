@@ -1,51 +1,12 @@
-{
-    "user": [
-      {
-        "href": "/elibrary/dashboard",
-        "label": "Dashboard",
-        "icon": "Home"
-      },
-      {
-        "href": "/elibrary/book",
-        "label": "Book Catalog",
-        "icon": "UserRoundPen"
-      }
-    ],
-    "admin": [
-      {
-        "href": "/admin/dashboard",
-        "label": "Dashboard",
-        "icon": "Home"
-      },
-      {
-        "href": "/admin/news",
-        "label": "News",
-        "icon": "FileCheck",
-        "dropdown": [
-          {
-            "href": "/admin/news/list",
-            "label": "List News"
-          },
-          {
-            "href": "/admin/news/new",
-            "label": "Add News"
-          }
-        ]
-      },
-      {
-        "href": "/admin/media",
-        "label": "Media",
-        "icon": "Image",
-        "dropdown": [
-          {
-            "href": "/admin/media/list",
-            "label": "List Gallery"
-          },
-          {
-            "href": "/admin/media/manage",
-            "label": "Manage Gallery"
-          }
-        ]
-      }
-    ]
-  }
+[
+    {
+      "href": "/elibrary/dashboard",
+      "label": "Dashboard",
+      "icon": "Home"
+    },
+    {
+      "href": "/elibrary/book",
+      "label": "Catalogue",
+      "icon": "FileCheck"
+    }
+]

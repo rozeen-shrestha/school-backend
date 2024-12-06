@@ -28,7 +28,7 @@ export default function Login() {
       if (session?.user?.role === "admin") {
         router.push("/admin"); // Redirect to admin page
       } else if (session?.user?.role === "user") {
-        router.push("/user"); // Redirect to user page
+        router.push("/elibrary/dashboard"); // Redirect to user page
       } else {
         router.push("/"); // Fallback redirect
       }
@@ -52,7 +52,7 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center h-screen">
       <form onSubmit={handleSubmit} className="w-96 p-6 shadow-lg rounded-lg">
-        <h1 className="text-2xl font-semibold mb-4">Admin Login</h1>
+        <h1 className="text-2xl font-semibold mb-4">User Login</h1>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Username</label>

@@ -1,44 +1,77 @@
 "use client"
 
-import React from 'react';
+import React, { useContext } from 'react';
+import { LanguageContext } from '@/components/LanguageContext'; // Importing LanguageContext
 
 const page = () => {
+  const { language } = useContext(LanguageContext); // Access the current language from context
+
   const achievements = [
     {
-      title: 'Academic Excellence',
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s', // Replace with your actual image paths
-      description:
-        'Top results in board exams for consecutive years with a focus on holistic education.',
+      title: {
+        en: 'Academic Excellence',
+        np: 'शैक्षिक उत्कृष्टता',
+      },
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
+      description: {
+        en: 'Top results in board exams for consecutive years with a focus on holistic education.',
+        np: 'समान्य वर्षहरूमा बोर्ड परीक्षा परिणामहरू, समग्र शिक्षा प्रदान गर्नमा ध्यान केन्द्रित गरिएको।',
+      },
     },
     {
-      title: 'Sports Championship',
+      title: {
+        en: 'Sports Championship',
+        np: 'खेल च्याम्पियनशिप',
+      },
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
-      description:
-        'Winners of inter-school competitions with stellar performances in athletics and team sports.',
+      description: {
+        en: 'Winners of inter-school competitions with stellar performances in athletics and team sports.',
+        np: 'इंटर-स्कूल प्रतियोगिताहरूमा विजेताहरू, एथलेटिक्स र टोली खेलहरूमा उत्कृष्ट प्रदर्शन।',
+      },
     },
     {
-      title: 'Science Fair Winner',
+      title: {
+        en: 'Science Fair Winner',
+        np: 'विज्ञान मेला विजेता',
+      },
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
-      description:
-        'Innovative projects that made headlines, including renewable energy models.',
+      description: {
+        en: 'Innovative projects that made headlines, including renewable energy models.',
+        np: 'नवीनतम परियोजनाहरू जसले हेडलाइन्स बनाएका छन्, जसमा नवीकरणीय ऊर्जा मोडेलहरू समावेश छन्।',
+      },
     },
     {
-      title: 'Debate Champion',
+      title: {
+        en: 'Debate Champion',
+        np: 'विवाद च्याम्पियन',
+      },
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
-      description:
-        'Nationwide debating competition champions for three consecutive years.',
+      description: {
+        en: 'Nationwide debating competition champions for three consecutive years.',
+        np: 'तीन लगातार वर्षहरूको लागि राष्ट्रिय बहस प्रतियोगिता च्याम्पियनहरू।',
+      },
     },
     {
-      title: 'Art Showcase',
+      title: {
+        en: 'Art Showcase',
+        np: 'कला प्रदर्शनी',
+      },
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
-      description:
-        'Top awards in creative arts, from painting to digital design.',
+      description: {
+        en: 'Top awards in creative arts, from painting to digital design.',
+        np: 'रचनात्मक कलामा शीर्ष पुरस्कारहरू, चित्रकला देखि डिजिटल डिजाइन सम्म।',
+      },
     },
     {
-      title: 'Community Service',
+      title: {
+        en: 'Community Service',
+        np: 'सामुदायिक सेवा',
+      },
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
-      description:
-        'Impactful volunteering initiatives and social awareness campaigns.',
+      description: {
+        en: 'Impactful volunteering initiatives and social awareness campaigns.',
+        np: 'प्रभावशाली स्वयंसेवी पहलहरू र सामाजिक सचेतना अभियानहरू।',
+      },
     },
   ];
 
@@ -54,14 +87,14 @@ const page = () => {
               >
                 <img
                   src={achievement.image}
-                  alt={achievement.title}
+                  alt={language === 'en' ? achievement.title.en : achievement.title.np}
                   className="w-full h-40 object-cover rounded-md mb-4"
                 />
                 <h2 className="text-2xl font-semibold text-blue-900 mb-4">
-                  {achievement.title}
+                  {language === 'en' ? achievement.title.en : achievement.title.np}
                 </h2>
                 <p className="text-sm text-gray-600 mb-4">
-                  {achievement.description}
+                  {language === 'en' ? achievement.description.en : achievement.description.np}
                 </p>
               </div>
             ))}

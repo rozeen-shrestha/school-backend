@@ -1,32 +1,21 @@
-// backend/src/app/api/auth/[...nextauth]/route.js
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { MongoClient } from "mongodb";
+import bcrypt from "bcryptjs";
 
-// Mock database or data store with two users
-const users = {
-  admin: {
-    id: 1,
-    name: "admin",
-    password: "admin", // Password for admin user
-    role: "admin",     // Role for admin user
-    permissions: {
-      books: ['all'],
-      tags: ['all'],
-      pdfs:['all']
-    }
-  },
-  user: {
-    id: 2,
-    name: "user",
-    password: "user", // Password for regular user
-    role: "user",         // Role for regular user
-    permissions: {
-      books: ['6710dfd13989c1e05a106e16'], // Full book access
-      tags: [],
-      pdfs:['']
-    }
-  },
-};
+const uri = process.env.MONGODB_URI;
+const dbName = process.env.MONGODB_DB;
+
+async function connectToDatabase() {
+  const client = new MongoClient(uri);
+  try {
+    await client.connect();
+    return client.db(dbName);
+  } catch (error) {
+    console.error("Failed to connect to MongoDB", error);
+    throw error;
+  }
+}
 
 export const authOptions = {
   providers: [
@@ -37,33 +26,39 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // Find the user by the username
-        const user = users[credentials.username];
+        if (!credentials) return null;
 
-        // If the user exists and the password matches, return the user
-        if (user && credentials.password === user.password) {
-          return {
-            id: user.id,
-            name: user.name,
-            role: user.role,
-            permissions: user.permissions,
-          };
+        try {
+          const db = await connectToDatabase();
+          const user = await db.collection('users').findOne({
+            username: credentials.username
+          });
+
+          if (user && await bcrypt.compare(credentials.password, user.password)) {
+            return {
+              id: user._id.toString(),
+              name: user.username,
+              role: user.role,
+              permissions: user.permissions
+            };
+          }
+
+          return null;
+        } catch (error) {
+          console.error("Authentication error", error);
+          return null;
         }
-
-        // Return null if credentials are invalid
-        return null;
       },
     }),
   ],
   callbacks: {
     async session({ session, token }) {
-      // Add the user role to the session object
+      session.user.id = token.sub;
       session.user.role = token.role;
       session.user.permissions = token.permissions;
       return session;
     },
     async jwt({ token, user }) {
-      // Add the role and permissions to the JWT token when logging in
       if (user) {
         token.role = user.role;
         token.permissions = user.permissions;
@@ -72,8 +67,9 @@ export const authOptions = {
     },
   },
   pages: {
-    signIn: "/", // Redirect to sign-in page if not authenticated
+    signIn: "/login",
   },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);

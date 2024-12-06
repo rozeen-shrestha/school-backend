@@ -159,7 +159,6 @@ const Navbar = () => {
         link: "/achievements",
         id: "achievements",
       },
-      events: { en: "Events", np: "घटना", link: "/events", id: "events" },
       news: { en: "News", np: "समाचार", link: "/news", id: "news" },
       contact: {
         en: "Contact",
@@ -228,7 +227,7 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-8 w-full">
               {isScrolled && (
                 <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s"
+                  src="/api/file/IMG/Logo.jpg"
                   alt="Logo"
                   className="w-10 h-10 rounded-full shadow-lg"
                 />

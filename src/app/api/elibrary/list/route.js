@@ -29,19 +29,31 @@ export async function GET(request) {
     const client = await clientPromise;
     const db = client.db(dbName);
 
-    let books = [];
+    const url = new URL(request.url);
+    const type = url.searchParams.get('type');
 
-    if (token.permissions.books.includes('all')) {
-      books = await db.collection('books').find().toArray();
-    } else {
-      const bookIds = token.permissions.books.map(id => new ObjectId(id));
-      books = await db.collection('books').find({ _id: { $in: bookIds } }).toArray();
+    let books = [];
+    let tagBooks = [];
+
+    if (type === 'books' || !type) {
+      if (token.permissions.books.includes('all')) {
+        books = await db.collection('books').find().toArray();
+      } else {
+        const bookIds = token.permissions.books.map(id => new ObjectId(id));
+        books = await db.collection('books').find({ _id: { $in: bookIds } }).toArray();
+      }
     }
 
-    const tagBooks = await db.collection('books').find({ tags: { $in: token.permissions.tags } }).toArray();
-    const tagBookIds = new Set(tagBooks.map(book => book._id.toString()));
+    if (type === 'tags' || !type) {
+      tagBooks = await db.collection('books').find({ tags: { $in: token.permissions.tags } }).toArray();
+    }
 
-    books = books.concat(tagBooks.filter(book => !tagBookIds.has(book._id.toString())));
+    if (!type) {
+      const tagBookIds = new Set(tagBooks.map(book => book._id.toString()));
+      books = books.concat(tagBooks.filter(book => !tagBookIds.has(book._id.toString())));
+    } else if (type === 'tags') {
+      books = tagBooks;
+    }
 
     return new Response(JSON.stringify(books), {
       status: 200,

@@ -68,5 +68,20 @@
         "label": "Add Teachers"
       }
     ]
+  },
+  {
+    "href": "/admin/users",
+    "label": "Users",
+    "icon": "UserRoundPen",
+    "dropdown": [
+      {
+        "href": "/admin/users/manage",
+        "label": "Manage Users"
+      },
+      {
+        "href": "/admin/users/add",
+        "label": "Add Users"
+      }
+    ]
   }
 ]
