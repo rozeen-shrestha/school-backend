@@ -56,7 +56,7 @@ export default function Books() {
   useEffect(() => {
     const results = fuse.search(searchTerm)
     setSearchResults(results.map((result) => result.item))
-  }, [searchTerm, books]) // Add books as a dependency
+  }, [searchTerm, books])
 
   const getFileExtension = (url) => {
     return url.split('.').pop()?.toUpperCase() || 'Unknown'
@@ -68,7 +68,7 @@ export default function Books() {
   }
 
   const handleDelete = async () => {
-    if (!bookToDelete) return; // Ensure there's a book to delete
+    if (!bookToDelete) return;
 
     const { bookId, imageName, pdfName } = bookToDelete;
 
@@ -94,7 +94,6 @@ export default function Books() {
         throw new Error(responseData.error || 'Failed to delete book');
       }
 
-      // Fetch the updated book list after deletion
       await fetchBooks();
       toast({
         title: "Success",
@@ -114,48 +113,48 @@ export default function Books() {
 
   return (
     <div className="w-full px-2 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-4">Books List</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-white">Books List</h1>
       <Input
         type="text"
         placeholder="Search books..."
         onChange={handleSearch}
-        className="w-full mb-4"
+        className="w-full mb-4 bg-gray-800 text-white"
       />
-      {searchTerm && searchResults.length === 0 && <p className="mb-4">No results found.</p>}
-      <Table className="w-full border-collapse border border-gray-200 dark:border-gray-700">
-        <TableHeader className="bg-gray-100 dark:bg-gray-800">
+      {searchTerm && searchResults.length === 0 && <p className="mb-4 text-gray-400">No results found.</p>}
+      <Table className="w-full border-collapse border border-gray-700 shadow-lg">
+        <TableHeader className="bg-gray-800">
           <TableRow>
-            <TableHead className="p-2 text-left w-12">Thum</TableHead>
-            <TableHead className="p-2 text-left">Title</TableHead>
-            <TableHead className="p-2 text-left hidden sm:table-cell">ID</TableHead>
-            <TableHead className="p-2 text-left hidden md:table-cell">Date</TableHead>
-            <TableHead className="p-2 text-left hidden md:table-cell">Author</TableHead>
-            <TableHead className="p-2 text-left hidden md:table-cell">Genre</TableHead>
-            <TableHead className="p-2 text-left hidden md:table-cell">Type</TableHead>
-            <TableHead className="p-2 text-right">Actions</TableHead>
+            <TableHead className="p-3 text-left w-12 text-sm font-semibold text-gray-300">Thumb</TableHead>
+            <TableHead className="p-3 text-left text-sm font-semibold text-gray-300">Title</TableHead>
+            <TableHead className="p-3 text-left text-sm font-semibold text-gray-300 hidden sm:table-cell">ID</TableHead>
+            <TableHead className="p-3 text-left text-sm font-semibold text-gray-300 hidden md:table-cell">Date</TableHead>
+            <TableHead className="p-3 text-left text-sm font-semibold text-gray-300 hidden md:table-cell">Author</TableHead>
+            <TableHead className="p-3 text-left text-sm font-semibold text-gray-300 hidden md:table-cell">Genre</TableHead>
+            <TableHead className="p-3 text-left text-sm font-semibold text-gray-300 hidden md:table-cell">Type</TableHead>
+            <TableHead className="p-3 text-right text-sm font-semibold text-gray-300">Actions</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody className="bg-white dark:bg-gray-900">
+        <TableBody className="bg-gray-900">
           {(searchTerm ? searchResults : books).map((book) => (
-            <TableRow key={book._id} className="border-b dark:border-gray-700">
-              <TableCell className="p-2">
+            <TableRow key={book._id} className="border-b dark:border-gray-700 hover:bg-gray-700">
+              <TableCell className="p-3">
                 <div className="flex items-center">
                   <img
-                    src={book.coverImageUrl ? `${book.coverImageUrl}` : '/path/to/fallback/image.jpg'} // Fallback image
+                    src={book.coverImageUrl ? `${book.coverImageUrl}` : '/path/to/fallback/image.jpg'}
                     alt={book.title}
-                    className="object-cover w-10 h-14 sm:w-12 sm:h-16"
+                    className="object-cover w-12 h-16 sm:w-16 sm:h-20"
                   />
                 </div>
               </TableCell>
-              <TableCell className="p-2">
+              <TableCell className="p-3 text-sm text-white">
                 <span className="font-medium">{book.title}</span>
               </TableCell>
-              <TableCell className="p-2 hidden sm:table-cell">{book.BookId}</TableCell>
-              <TableCell className="p-2 hidden md:table-cell">{format(new Date(book.addedAt), 'yyyy-MM-dd')}</TableCell>
-              <TableCell className="p-2 hidden sm:table-cell">{book.author}</TableCell>
-              <TableCell className="p-2 hidden sm:table-cell">{book.genre}</TableCell>
-              <TableCell className="p-2 hidden md:table-cell">{getFileExtension(book.pdfUrl)}</TableCell>
-              <TableCell className="p-2 text-right">
+              <TableCell className="p-3 text-sm text-white hidden sm:table-cell">{book.BookId}</TableCell>
+              <TableCell className="p-3 text-sm text-white hidden md:table-cell">{format(new Date(book.addedAt), 'yyyy-MM-dd')}</TableCell>
+              <TableCell className="p-3 text-sm text-white hidden sm:table-cell">{book.author}</TableCell>
+              <TableCell className="p-3 text-sm text-white hidden sm:table-cell">{book.genre}</TableCell>
+              <TableCell className="p-3 text-sm text-white hidden md:table-cell">{getFileExtension(book.pdfUrl)}</TableCell>
+              <TableCell className="p-3 text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="h-8 w-8 p-0">
@@ -178,8 +177,8 @@ export default function Books() {
                       onClick={() => {
                         setBookToDelete({
                           bookId: book._id,
-                          imageName: book.coverImageUrl?.split('/').pop() || 'unknown.jpg', // Handle undefined
-                          pdfName: book.pdfUrl?.split('/').pop() || 'unknown.pdf', // Handle undefined
+                          imageName: book.coverImageUrl?.split('/').pop() || 'unknown.jpg',
+                          pdfName: book.pdfUrl?.split('/').pop() || 'unknown.pdf',
                         });
                         setDeleteDialogOpen(true);
                       }}

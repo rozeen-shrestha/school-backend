@@ -2,7 +2,7 @@ import { getToken } from 'next-auth/jwt';
 import { NextResponse } from 'next/server';
 
 const routes = {
-  admin: ['/admin/:path*', '/admin'],
+  admin: ['/admin/:path*', '/admin','/elibrary/:path*', '/elibrary'],
   user: ['/elibrary/:path*', '/elibrary'],
   open: ['/login'],
 };

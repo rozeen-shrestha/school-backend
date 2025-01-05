@@ -2,14 +2,14 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-const AdminPage = () => {
+const LibraryPage = () => {
     const router = useRouter();
 
     useEffect(() => {
-        router.push('/admin/dashboard');
+        router.push('/elibrary/dashboard');
     }, [router]);
 
     return null;
 };
 
-export default AdminPage;
+export default LibraryPage;
