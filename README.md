@@ -1,7 +1,7 @@
 
 # School Website with eLibrary
 
-### [**View Demo**](http://129.154.243.254:3000)
+### [**View Demo**](https://schoolweb.rozeen.me/)
 - **Admin Panel**: `/admin`
 - **E-Library**: `/elibrary`
 - **Login**: `/login`
