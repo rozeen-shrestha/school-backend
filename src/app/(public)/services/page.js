@@ -28,7 +28,7 @@ const page = () => {
         np:
           "स्कूलमा भौतिकी, रसायन, जीवविज्ञान र कम्प्युटर विज्ञानका लागि पृथक प्रयोगशालाहरू छन्। सबै प्रयोगशालाहरू आधुनिक सुविधाहरूसँग सुसज्जित छन्, जसले व्यावहारिक अध्ययनको लागि उत्कृष्ट वातावरण सुनिश्चित गर्दछ।",
       },
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s",
+      image: "https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg",
     },
     {
       title: {
@@ -41,7 +41,7 @@ const page = () => {
         np:
           "हाम्रो स्कूलको बसहरूको बेड़ा सुरक्षित, भरपर्दो र राम्रोसँग मर्मत गरिएको छ, जसले स्कूलमा र स्कूलबाट जाने लागि निश्चित मार्गहरू प्रदान गर्दछ।",
       },
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s",
+      image: "https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg",
     },
     {
       title: {
@@ -54,7 +54,7 @@ const page = () => {
         np:
           "स्कूल पुस्तकालयले पुस्तकहरू, जर्नलहरू र डिजिटल स्रोतहरूको एक विस्तृत सङ्ग्रह प्रदान गर्दछ, जसले अनुसन्धान र अध्ययनलाई प्रोत्साहन दिन्छ।",
       },
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s",
+      image: "https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg",
     },
     {
       title: {
@@ -67,7 +67,7 @@ const page = () => {
         np:
           "हाम्रो होस्टेल सुविधाहरूले विद्यार्थीहरूको बसोबासको लागि सुरक्षित, सफा, र आरामदायक वातावरण प्रदान गर्दछ।",
       },
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s",
+      image: "https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg",
     },
     {
       title: {
@@ -80,7 +80,7 @@ const page = () => {
         np:
           "क्याफेटेरिया स्वच्छ र पौष्टिक भोजनहरू प्रदान गर्दछ, जसले विद्यार्थीहरू र कर्मचारीहरूका लागि विभिन्न विकल्पहरू प्रदान गर्दछ।",
       },
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s",
+      image: "https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg",
     },
   ];
 

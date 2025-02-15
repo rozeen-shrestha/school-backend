@@ -12,7 +12,7 @@ const page = () => {
         en: 'Academic Excellence',
         np: 'शैक्षिक उत्कृष्टता',
       },
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
+      image: 'https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg',
       description: {
         en: 'Top results in board exams for consecutive years with a focus on holistic education.',
         np: 'समान्य वर्षहरूमा बोर्ड परीक्षा परिणामहरू, समग्र शिक्षा प्रदान गर्नमा ध्यान केन्द्रित गरिएको।',
@@ -23,7 +23,7 @@ const page = () => {
         en: 'Sports Championship',
         np: 'खेल च्याम्पियनशिप',
       },
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
+      image: 'https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg',
       description: {
         en: 'Winners of inter-school competitions with stellar performances in athletics and team sports.',
         np: 'इंटर-स्कूल प्रतियोगिताहरूमा विजेताहरू, एथलेटिक्स र टोली खेलहरूमा उत्कृष्ट प्रदर्शन।',
@@ -34,7 +34,7 @@ const page = () => {
         en: 'Science Fair Winner',
         np: 'विज्ञान मेला विजेता',
       },
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
+      image: 'https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg',
       description: {
         en: 'Innovative projects that made headlines, including renewable energy models.',
         np: 'नवीनतम परियोजनाहरू जसले हेडलाइन्स बनाएका छन्, जसमा नवीकरणीय ऊर्जा मोडेलहरू समावेश छन्।',
@@ -45,7 +45,7 @@ const page = () => {
         en: 'Debate Champion',
         np: 'विवाद च्याम्पियन',
       },
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
+      image: 'https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg',
       description: {
         en: 'Nationwide debating competition champions for three consecutive years.',
         np: 'तीन लगातार वर्षहरूको लागि राष्ट्रिय बहस प्रतियोगिता च्याम्पियनहरू।',
@@ -56,7 +56,7 @@ const page = () => {
         en: 'Art Showcase',
         np: 'कला प्रदर्शनी',
       },
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
+      image: 'https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg',
       description: {
         en: 'Top awards in creative arts, from painting to digital design.',
         np: 'रचनात्मक कलामा शीर्ष पुरस्कारहरू, चित्रकला देखि डिजिटल डिजाइन सम्म।',
@@ -67,7 +67,7 @@ const page = () => {
         en: 'Community Service',
         np: 'सामुदायिक सेवा',
       },
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
+      image: 'https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg',
       description: {
         en: 'Impactful volunteering initiatives and social awareness campaigns.',
         np: 'प्रभावशाली स्वयंसेवी पहलहरू र सामाजिक सचेतना अभियानहरू।',

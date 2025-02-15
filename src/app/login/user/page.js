@@ -53,33 +53,41 @@ export default function Login() {
     }
   };
 
-  const handleLoginRedirect = (role) => {
-    if (role === "admin") {
-      router.push("/login/admin");
-    } else if (role === "user") {
-      router.push("/login/user");
-    }
-  };
-
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="w-96 p-6 shadow-lg rounded-lg text-center">
-        <h1 className="text-2xl font-semibold mb-4">Choose Login Type</h1>
-        <div className="flex justify-around mb-6">
-          <button
-            onClick={() => handleLoginRedirect("admin")}
-            className="w-32 bg-blue-500 text-white py-2 px-4 rounded-lg"
-          >
-            Admin Login
-          </button>
-          <button
-            onClick={() => handleLoginRedirect("user")}
-            className="w-32 bg-green-500 text-white py-2 px-4 rounded-lg"
-          >
-            User Login
-          </button>
+      <form onSubmit={handleSubmit} className="w-96 p-6 shadow-lg rounded-lg">
+        <h1 className="text-2xl font-semibold mb-4">
+          {isAdminLogin ? "Admin Login" : "User Login"}
+        </h1>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            onKeyDown={handleUsernameKeyDown}
+            className="w-full border border-gray-300 p-2 rounded-lg"
+          />
         </div>
-      </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={handlePasswordKeyDown}
+            ref={passwordRef}
+            className="w-full border border-gray-300 p-2 rounded-lg"
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white p-2 rounded-lg"
+        >
+          Sign In
+        </button>
+      </form>
     </div>
   );
 }

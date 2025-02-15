@@ -19,7 +19,7 @@ const OURSERVICES = () => {
         en: 'Safe and reliable transportation for students.',
         np: 'विद्यार्थीहरूको लागि सुरक्षित र भरपर्दो यातायात सेवा।',
       },
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
+      image: 'https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg',
     },
     {
       title: { en: 'Library', np: 'पुस्तकालय' },
@@ -27,7 +27,7 @@ const OURSERVICES = () => {
         en: 'A vast collection of books and resources for students.',
         np: 'विद्यार्थीहरूको लागि किताब र स्रोतहरूको ठूलो सङ्ग्रह।',
       },
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
+      image: 'https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg',
     },
     {
       title: { en: 'Laboratories', np: 'प्रयोगशाला' },
@@ -35,7 +35,7 @@ const OURSERVICES = () => {
         en: 'Well-equipped labs for practical learning.',
         np: 'व्यावहारिक सिकाइका लागि राम्रोसँग सुसज्जित प्रयोगशालाहरू।',
       },
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
+      image: 'https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg',
     },
     {
       title: { en: 'Hostel', np: 'होस्टल' },
@@ -43,7 +43,7 @@ const OURSERVICES = () => {
         en: 'Comfortable and secure accommodation for students.',
         np: 'विद्यार्थीहरूको लागि आरामदायक र सुरक्षित आवास।',
       },
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
+      image: 'https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg',
     },
     {
       title: { en: 'Cafeteria', np: 'क्याफेटेरिया' },
@@ -51,7 +51,7 @@ const OURSERVICES = () => {
         en: 'Healthy and delicious meals for students and staff.',
         np: 'विद्यार्थीहरू र कर्मचारीहरूको लागि स्वस्थ र स्वादिलो खाना।',
       },
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s',
+      image: 'https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg',
     },
   ];
 

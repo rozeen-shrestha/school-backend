@@ -102,7 +102,7 @@ const PrincipalMessage = () => {
         <div className="flex justify-center my-8 hidden-slide" ref={imageRef}>
           <div className="border-2 border-gray-300 p-4 rounded-lg">
             <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReVOYEI-W4LmfCrb8AGSP3IIR1cPcQJiVu3w&s"
+              src="https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small_2x/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg"
               alt={translations[language].altText}
               className="w-40 h-40 object-cover rounded-lg mx-auto"
             />

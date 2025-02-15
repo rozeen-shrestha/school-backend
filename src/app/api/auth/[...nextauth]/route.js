@@ -31,15 +31,16 @@ export const authOptions = {
         try {
           const db = await connectToDatabase();
           const user = await db.collection('users').findOne({
-            username: credentials.username
+            username: credentials.username,
           });
 
           if (user && await bcrypt.compare(credentials.password, user.password)) {
+            // Check user role and return accordingly
             return {
               id: user._id.toString(),
               name: user.username,
-              role: user.role,
-              permissions: user.permissions
+              role: user.role,  // Make sure to have a 'role' field in your DB for user type
+              permissions: user.permissions,
             };
           }
 
@@ -67,7 +68,7 @@ export const authOptions = {
     },
   },
   pages: {
-    signIn: "/login",
+    signIn: "/login",  // Redirect to the general login page
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

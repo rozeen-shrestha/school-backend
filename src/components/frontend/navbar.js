@@ -166,6 +166,12 @@ const Navbar = () => {
         link: "/contact",
         id: "contact",
       },
+      elibrary: {
+        en: "eLibrary",
+        np: "ई-पुस्तकालय",
+        link: "/elibrary",
+        id: "elibrary",
+      },
     },
   };
 
