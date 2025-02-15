@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useContext, useEffect } from "react";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { Menu, X, Globe } from "lucide-react";
 import { LanguageContext } from "@/components/LanguageContext";
 
@@ -99,6 +99,7 @@ const LanguageDropdown = () => {
 
 // Navbar Component
 const Navbar = () => {
+  const router = useRouter(); // Add useRouter hook
   const LogoUrl = "/api/file/Logo.jpg";
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -178,6 +179,11 @@ const Navbar = () => {
   const getText = (contentObj) => contentObj[language];
   const navItems = Object.values(content.nav);
 
+  const handleNavClick = (link) => {
+    router.push(link); // Use router.push instead of Link
+    closeMenu();
+  };
+
   return (
     <div className="relative">
       <div className="w-full z-50 bg-blue-800 text-white fixed top-0 transition-all duration-300 border-0 shadow-none">
@@ -241,18 +247,17 @@ const Navbar = () => {
 
               <nav className="flex space-x-8 flex-grow">
                 {navItems.map((item) => (
-                  <Link
+                  <button
                     key={item.id}
-                    href={item.link}
+                    onClick={() => handleNavClick(item.link)} // Use handleNavClick
                     className="text-white hover:text-blue-200 transition-colors duration-200 font-medium whitespace-nowrap"
                   >
                     {getText(item)}
-                  </Link>
+                  </button>
                 ))}
               </nav>
 
-              <div className="flex-shrink-0">
-              </div>
+              <div className="flex-shrink-0"></div>
             </div>
 
             {isScrolled && (
@@ -292,14 +297,13 @@ const Navbar = () => {
         >
           <nav className="px-4 py-2 bg-blue-900 space-y-1">
             {navItems.map((item) => (
-              <Link
+              <button
                 key={item.id}
-                href={item.link}
-                onClick={closeMenu}
+                onClick={() => handleNavClick(item.link)} // Use handleNavClick
                 className="block py-3 px-4 hover:bg-blue-800 rounded-md transition-colors duration-200 min-w-[200px] whitespace-nowrap"
               >
                 {getText(item)}
-              </Link>
+              </button>
             ))}
           </nav>
         </div>
