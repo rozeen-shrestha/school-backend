@@ -294,16 +294,20 @@ const Page = () => {
                           category={category}
                         />
                       ) : (
-                        <form onSubmit={handleAddCategory}>
+                        <form onSubmit={handleAddCategory} className="space-y-4">
+                          <label htmlFor="new-category" className="block text-sm font-medium text-gray-700">
+                            Category Name
+                          </label>
                           <input
+                            id="new-category"
                             type="text"
                             value={newCategory}
                             onChange={(e) => setNewCategory(e.target.value)}
                             placeholder="Enter category name"
                             required
-                            className="input"
+                            className="input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                           />
-                          <UIButton type="submit" className="category-button">
+                          <UIButton type="submit" className="category-button w-full">
                             Add Category
                           </UIButton>
                         </form>

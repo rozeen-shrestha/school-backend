@@ -73,7 +73,7 @@ export default function BookList() {
             </CardContent>
             <CardFooter className="p-4">
               <Button asChild className="w-full">
-                <Link href={book.pdfUrl}>Read</Link>
+                <Link href={`view/${book.pdfUrl.split('/').pop().replace('.pdf', '')}`}>Read</Link>
               </Button>
             </CardFooter>
           </Card>

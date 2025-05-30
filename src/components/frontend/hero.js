@@ -1,100 +1,116 @@
-"use client";
+"use client"
 
-import React, { useState, useEffect, useContext } from 'react';
-import { LanguageContext } from '@/components/LanguageContext';
+import { useState, useEffect, useContext } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import { LanguageContext } from "@/components/LanguageContext"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
-const HERO = () => {
-  const { language } = useContext(LanguageContext); // Access the current language
-  const [activeIndex, setActiveIndex] = useState(0);
+const Hero = () => {
+  const { language } = useContext(LanguageContext)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   const slides = [
     {
-      img: '/api/file/IMG/buildingphoto.png',
+      img: "/api/file/IMG/buildingphoto.png",
       title: {
-        en: 'Learning Today, Leading Tomorrow.',
-        np: 'आजको शिक्षा, भविष्यको नेतृत्व।',
+        en: "Learning Today, Leading Tomorrow.",
+        np: "आजको शिक्षा, भविष्यको नेतृत्व।",
       },
       description: {
-        en: 'We had such a great time in Education.',
-        np: 'हामीलाई शिक्षा क्षेत्रमा उत्कृष्ट समय बिताउनुभयो।',
+        en: "We had such a great time in Education.",
+        np: "हामीलाई शिक्षा क्षेत्रमा उत्कृष्ट समय बिताउनुभयो।",
       },
     },
-  ];
+  ]
 
   const handleNext = () => {
-    setActiveIndex((prevIndex) => (prevIndex + 1) % slides.length);
-  };
+    setActiveIndex((prevIndex) => (prevIndex + 1) % slides.length)
+  }
 
   const handlePrev = () => {
-    setActiveIndex((prevIndex) =>
-      prevIndex === 0 ? slides.length - 1 : prevIndex - 1
-    );
-  };
+    setActiveIndex((prevIndex) => (prevIndex === 0 ? slides.length - 1 : prevIndex - 1))
+  }
 
   useEffect(() => {
-    const interval = setInterval(handleNext, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    const interval = setInterval(handleNext, 5000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
-    <div className="relative overflow-hidden">
-      <div className="py-12 px-4 sm:px-6 lg:px-8">
-        <div className="relative w-full h-[500px]">
-          {slides.map((slide, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === activeIndex ? 'opacity-100' : 'opacity-0'
-              }`}
-            >
-              <img
-                src={slide.img}
-                alt="education"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-50 text-white p-8">
-                <h1 className="text-3xl md:text-5xl font-bold animate-fadeInLeft">
-                  {slide.title[language]} {/* Display title based on current language */}
-                </h1>
-                <p className="mt-4 text-lg">{slide.description[language]}</p> {/* Display description based on current language */}
-                <a
-                  href="/contact"
-                  className="mt-6 bg-blue-800 hover:bg-blue-600 text-white py-2 px-6 rounded shadow transition duration-300"
-                >
-                  {language === 'en' ? 'Apply Now' : 'अहिले आवेदन गर्नुहोस्'} {/* Button text based on language */}
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
+    <div className="relative w-full h-[80vh] overflow-hidden">
+      {slides.map((slide, index) => (
+        <div
+          key={index}
+          className={cn(
+            "absolute inset-0 transition-opacity duration-1000",
+            index === activeIndex ? "opacity-100" : "opacity-0",
+          )}
+        >
+          {/* Full width image with proper Next.js Image component */}
+          <div className="absolute inset-0">
+            <Image src={slide.img || "/placeholder.svg"} alt="education" fill priority className="object-cover" />
+          </div>
 
-        <button
-          className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-2 rounded-r hover:bg-gray-700"
+          {/* Modern gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
+
+          {/* Content container with better positioning */}
+          <div className="absolute inset-0 flex flex-col justify-center items-center text-white p-4 md:p-8 max-w-7xl mx-auto">
+            <div className="text-center space-y-6">
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tight animate-fadeInLeft">
+                {slide.title[language]}
+              </h1>
+              <p className="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-gray-100">{slide.description[language]}</p>
+              <Button asChild size="lg" className="mt-8 bg-primary hover:bg-primary/90 text-primary-foreground">
+                <Link href="/contact">{language === "en" ? "Apply Now" : "अहिले आवेदन गर्नुहोस्"}</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {/* Improved navigation buttons */}
+      <div className="absolute inset-x-0 bottom-0 top-0 flex items-center justify-between p-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-10 w-10 rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/30 text-white"
           onClick={handlePrev}
         >
-          ❮
-        </button>
-        <button
-          className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-2 rounded-l hover:bg-gray-700"
+          <ChevronLeft className="h-6 w-6" />
+          <span className="sr-only">Previous slide</span>
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-10 w-10 rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/30 text-white"
           onClick={handleNext}
         >
-          ❯
-        </button>
+          <ChevronRight className="h-6 w-6" />
+          <span className="sr-only">Next slide</span>
+        </Button>
+      </div>
 
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-3">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              className={`w-3 h-3 rounded-full ${
-                index === activeIndex ? 'bg-white' : 'bg-gray-400'
-              }`}
-              onClick={() => setActiveIndex(index)}
-            />
-          ))}
-        </div>
+      {/* Improved indicators */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-10">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            className={cn(
+              "w-3 h-3 rounded-full transition-all duration-300",
+              index === activeIndex ? "bg-white w-8" : "bg-white/50 hover:bg-white/80",
+            )}
+            onClick={() => setActiveIndex(index)}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default HERO;
+export default Hero

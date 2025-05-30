@@ -1,38 +1,33 @@
-"use client";
+"use client"
 
-import React, { useState, useContext, useEffect } from "react";
-import { useRouter } from "next/router";
-import { Menu, X, Globe } from "lucide-react";
-import { LanguageContext } from "@/components/LanguageContext";
+import { useState, useContext, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { Menu, X, Globe } from "lucide-react"
+import { LanguageContext } from "@/components/LanguageContext"
 
 // Scrolling News Ticker Component
 const ScrollingNewsTicker = ({ news, language }) => {
-  const [position, setPosition] = useState(0);
+  const [position, setPosition] = useState(0)
 
   useEffect(() => {
-    const tickerContainer = document.getElementById("news-ticker-container");
-    const tickerContent = document.getElementById("news-ticker-content");
+    const tickerContainer = document.getElementById("news-ticker-container")
+    const tickerContent = document.getElementById("news-ticker-content")
 
-    if (!tickerContainer || !tickerContent) return;
+    if (!tickerContainer || !tickerContent) return
 
-    const containerWidth = tickerContainer.offsetWidth;
-    const contentWidth = tickerContent.offsetWidth;
+    const containerWidth = tickerContainer.offsetWidth
+    const contentWidth = tickerContent.offsetWidth
 
     const animate = () => {
-      setPosition((prev) =>
-        prev <= -contentWidth ? containerWidth : prev - 1
-      );
-    };
+      setPosition((prev) => (prev <= -contentWidth ? containerWidth : prev - 1))
+    }
 
-    const intervalId = setInterval(animate, 20);
-    return () => clearInterval(intervalId);
-  }, [news]);
+    const intervalId = setInterval(animate, 20)
+    return () => clearInterval(intervalId)
+  }, [news])
 
   return (
-    <div
-      id="news-ticker-container"
-      className="relative w-full h-full overflow-hidden flex items-center justify-center"
-    >
+    <div id="news-ticker-container" className="relative w-full h-full overflow-hidden flex items-center justify-center">
       <div
         id="news-ticker-content"
         className="absolute whitespace-nowrap flex"
@@ -48,28 +43,42 @@ const ScrollingNewsTicker = ({ news, language }) => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Language Dropdown Component
 const LanguageDropdown = () => {
-  const { language, toggleLanguage } = useContext(LanguageContext);
-  const [isOpen, setIsOpen] = useState(false);
+  const { language, setLanguage } = useContext(LanguageContext)
+  const [isOpen, setIsOpen] = useState(false)
 
   const languages = [
     { code: "en", name: "English" },
     { code: "np", name: "नेपाली" },
-  ];
+  ]
 
   const handleLanguageChange = (newLanguage) => {
     if (newLanguage !== language) {
-      toggleLanguage();
+      setLanguage(newLanguage)
     }
-    setIsOpen(false);
-  };
+    setIsOpen(false)
+  }
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isOpen && !event.target.closest(".language-dropdown")) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isOpen])
 
   return (
-    <div className="relative">
+    <div className="relative language-dropdown">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center space-x-2 text-white hover:text-blue-200 transition-colors duration-200"
@@ -94,29 +103,42 @@ const LanguageDropdown = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // Navbar Component
 const Navbar = () => {
-  const router = useRouter(); // Add useRouter hook
-  const LogoUrl = "/api/file/Logo.jpg";
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const { language } = useContext(LanguageContext);
+  const router = useRouter()
+  const [isOpen, setIsOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+  const { language } = useContext(LanguageContext)
 
   const handleScroll = () => {
-    const scrollTop = window.scrollY;
-    setIsScrolled(scrollTop > 50);
-  };
+    const scrollTop = window.scrollY
+    setIsScrolled(scrollTop > 50)
+  }
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
-  const toggleMenu = () => setIsOpen(!isOpen);
-  const closeMenu = () => setIsOpen(false);
+  const toggleMenu = () => setIsOpen(!isOpen)
+  const closeMenu = () => setIsOpen(false)
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isOpen && !event.target.closest(".mobile-menu-container")) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isOpen])
 
   const content = {
     schoolName: {
@@ -148,6 +170,12 @@ const Navbar = () => {
         link: "/services",
         id: "service",
       },
+      gallery: {
+        en: "Gallery",
+        np: "ग्यालेरी",
+        link: "/gallery",
+        id: "gallery",
+      },
       teacher: {
         en: "Our Teachers",
         np: "हाम्रो शिक्षक",
@@ -173,16 +201,28 @@ const Navbar = () => {
         link: "/elibrary",
         id: "elibrary",
       },
+      login: {
+        en: "login",
+        np: "लगइन",
+        link: "/login",
+        id: "login",
+      },
     },
-  };
+  }
 
-  const getText = (contentObj) => contentObj[language];
-  const navItems = Object.values(content.nav);
+  const getText = (contentObj) => contentObj[language]
+  const navItems = Object.values(content.nav)
 
-  const handleNavClick = (link) => {
-    router.push(link); // Use router.push instead of Link
-    closeMenu();
-  };
+  const handleNavClick = (link, id) => {
+    if (id === "elibrary" || id === "login") {
+      // Open eLibrary in a new tab
+      window.open(link, "_blank", "noopener,noreferrer")
+    } else {
+      // Navigate normally for other links
+      router.push(link)
+    }
+    closeMenu()
+  }
 
   return (
     <div className="relative">
@@ -192,24 +232,20 @@ const Navbar = () => {
             <div className="px-4 py-4 flex justify-between items-center">
               <div className="flex items-center space-x-4">
                 <img
-                  src="/api/file/IMG/Logo.jpg"
-                  alt="Logo"
-                  className="w-12 h-12 rounded-full shadow-lg"
+                  src="/placeholder.svg?height=48&width=48"
+                  alt="School Logo"
+                  className="w-12 h-12 rounded-full shadow-lg object-cover"
                 />
                 <div className="flex items-center space-x-4">
                   <div className="md:block">
                     <h1 className="font-bold text-lg leading-tight md:text-lg text-sm">
                       {getText(content.schoolName)}
                     </h1>
-                    <p className="text-sm text-gray-200 hidden md:block">
-                      {getText(content.address)}
-                    </p>
+                    <p className="text-sm text-gray-200 hidden md:block">{getText(content.address)}</p>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <p className="font-bold text-xl pl-6 hidden md:block">
-                      {getText(content.notice)}
-                    </p>
-                    <div className=" mt-2 hidden md:block w-96 h-6 overflow-hidden">
+                    <p className="font-bold text-xl pl-6 hidden md:block">{getText(content.notice)}</p>
+                    <div className="mt-2 hidden md:block w-96 h-6 overflow-hidden">
                       <ScrollingNewsTicker news={content.news} language={language} />
                     </div>
                   </div>
@@ -220,28 +256,27 @@ const Navbar = () => {
                 <LanguageDropdown />
               </div>
 
-              <button
-                onClick={toggleMenu}
-                className="md:hidden p-2 hover:bg-blue-700 rounded-md transition-colors duration-200"
-              >
-                {isOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
+              <div className="mobile-menu-container">
+                <button
+                  onClick={toggleMenu}
+                  className="md:hidden p-2 hover:bg-blue-700 rounded-md transition-colors duration-200"
+                  aria-label="Toggle mobile menu"
+                >
+                  {isOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+              </div>
             </div>
           </div>
         )}
 
-        <div
-          className={`container mx-auto transition-all duration-300 ${
-            isScrolled ? "py-3" : "py-2 bg-blue-800"
-          }`}
-        >
+        <div className={`container mx-auto transition-all duration-300 ${isScrolled ? "py-3" : "py-2 bg-blue-800"}`}>
           <div className="px-4 flex justify-between items-center">
             <div className="hidden md:flex items-center space-x-8 w-full">
               {isScrolled && (
                 <img
-                  src="/api/file/IMG/Logo.jpg"
-                  alt="Logo"
-                  className="w-10 h-10 rounded-full shadow-lg"
+                  src="/placeholder.svg?height=40&width=40"
+                  alt="School Logo"
+                  className="w-10 h-10 rounded-full shadow-lg object-cover"
                 />
               )}
 
@@ -249,7 +284,7 @@ const Navbar = () => {
                 {navItems.map((item) => (
                   <button
                     key={item.id}
-                    onClick={() => handleNavClick(item.link)} // Use handleNavClick
+                    onClick={() => handleNavClick(item.link, item.id)}
                     className="text-white hover:text-blue-200 transition-colors duration-200 font-medium whitespace-nowrap"
                   >
                     {getText(item)}
@@ -264,20 +299,23 @@ const Navbar = () => {
               <div className="md:hidden flex items-center justify-between w-full">
                 <div className="flex items-center space-x-3">
                   <img
-                    src={LogoUrl}
-                    alt="Logo"
-                    className="w-10 h-10 rounded-full shadow-lg"
+                    src="/placeholder.svg?height=40&width=40"
+                    alt="School Logo"
+                    className="w-10 h-10 rounded-full shadow-lg object-cover"
                   />
                   <h2 className="text-sm font-medium">{getText(content.schoolName)}</h2>
                 </div>
                 <div className="flex items-center space-x-3">
                   <LanguageDropdown />
-                  <button
-                    onClick={toggleMenu}
-                    className="p-2 hover:bg-blue-700 rounded-md transition-colors duration-200"
-                  >
-                    {isOpen ? <X size={24} /> : <Menu size={24} />}
-                  </button>
+                  <div className="mobile-menu-container">
+                    <button
+                      onClick={toggleMenu}
+                      className="p-2 hover:bg-blue-700 rounded-md transition-colors duration-200"
+                      aria-label="Toggle mobile menu"
+                    >
+                      {isOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -291,7 +329,7 @@ const Navbar = () => {
         </div>
 
         <div
-          className={`md:hidden transition-all duration-300 overflow-hidden ${
+          className={`md:hidden transition-all duration-300 overflow-hidden mobile-menu-container ${
             isOpen ? "max-h-screen" : "max-h-0"
           }`}
         >
@@ -299,8 +337,8 @@ const Navbar = () => {
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => handleNavClick(item.link)} // Use handleNavClick
-                className="block py-3 px-4 hover:bg-blue-800 rounded-md transition-colors duration-200 min-w-[200px] whitespace-nowrap"
+                onClick={() => handleNavClick(item.link, item.id)}
+                className="block py-3 px-4 hover:bg-blue-800 rounded-md transition-colors duration-200 min-w-[200px] whitespace-nowrap text-left w-full"
               >
                 {getText(item)}
               </button>
@@ -309,7 +347,7 @@ const Navbar = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

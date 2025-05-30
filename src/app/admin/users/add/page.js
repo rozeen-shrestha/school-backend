@@ -92,7 +92,8 @@ export default function CreateUserPage() {
           author: book.author
         })));
 
-        setTags(tagsData.map(tag => ({
+        // Update this part to handle the new tags API response
+        setTags(tagsData.tags.map(tag => ({
           name: tag
         })));
       } catch (error) {

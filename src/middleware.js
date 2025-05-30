@@ -38,7 +38,7 @@ export async function middleware(req) {
 
   // Protect user routes
   if (routes.user.some(route => pathname.match(new RegExp(`^${route.replace(':path*', '.*')}$`)))) {
-    if (token?.role === 'user') {
+    if (token?.role === 'user' || token?.role === 'admin') {
       return NextResponse.next();
     }
     return NextResponse.redirect(new URL('/login/user', req.url));

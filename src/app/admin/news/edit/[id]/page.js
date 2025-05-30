@@ -1,131 +1,195 @@
-'use client'; // Enable client-side code
+"use client"
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import 'quill/dist/quill.snow.css'; // Import Quill styles
-import dynamic from 'next/dynamic';
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import "quill/dist/quill.snow.css"
+import dynamic from "next/dynamic"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { CalendarIcon, Save, Eye } from "lucide-react"
 
 // Dynamically import the Quill editor
-const Quill = dynamic(() => import('react-quill'), { ssr: false });
+const Quill = dynamic(() => import("react-quill"), { ssr: false })
 
-export default function NewNewsForm({ params }) {
-  const [title, setTitle] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true); // State for loading
-  const router = useRouter();
+export default function EditNewsForm({ params }) {
+  const [title, setTitle] = useState("")
+  const [message, setMessage] = useState("")
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [showPreview, setShowPreview] = useState(false)
+  const router = useRouter()
+
+  const currentDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })
 
   useEffect(() => {
     const fetchNews = async () => {
-      setLoading(true); // Start loading
+      setLoading(true)
       try {
-        const res = await fetch(`/api/news/${params.id}`);
+        const res = await fetch(`/api/news/${params.id}`)
         if (!res.ok) {
-          throw new Error('Failed to fetch News');
+          throw new Error("Failed to fetch News")
         }
-        const data = await res.json();
-        setTitle(data.title);
-        setMessage(data.message);
+        const data = await res.json()
+        setTitle(data.title)
+        setMessage(data.message)
       } catch (err) {
-        setError(err.message);
+        setError(err.message)
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false)
       }
-    };
+    }
 
-    fetchNews();
-  }, [params.id]); // Fetch when the component mounts or when the id changes
+    fetchNews()
+  }, [params.id])
 
   const quillModules = {
     toolbar: [
-      ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-      ['blockquote', 'code-block'],
-      [{ header: 1 }, { header: 2 }],             // custom button values
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      [{ script: 'sub' }, { script: 'super' }],  // superscript/subscript
-      [{ indent: '-1' }, { indent: '+1' }],      // outdent/indent
-      [{ direction: 'rtl' }],                     // text direction
-      [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+      ["bold", "italic", "underline", "strike"],
+      ["blockquote", "code-block"],
+      [{ header: 1 }, { header: 2 }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ script: "sub" }, { script: "super" }],
+      [{ indent: "-1" }, { indent: "+1" }],
+      [{ direction: "rtl" }],
+      [{ size: ["small", false, "large", "huge"] }],
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      [{ color: [] }, { background: [] }],        // dropdown with defaults from theme
+      [{ color: [] }, { background: [] }],
       [{ font: [] }],
       [{ align: [] }],
-      ['clean']                                   // remove formatting button
+      ["clean"],
     ],
-  };
+  }
+
+  const togglePreview = () => {
+    setShowPreview(!showPreview)
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+    e.preventDefault()
+    setError(null)
+
+    if (!title.trim()) {
+      setError("Title is required")
+      return
+    }
+
+    if (!message.trim() || message === "<p><br></p>") {
+      setError("Message content is required")
+      return
+    }
 
     try {
-      const res = await fetch('/api/news/edit', {
-        method: 'PUT', // Use PUT for updates
+      const res = await fetch("/api/news/edit", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id: params.id, title, message }), // ID remains as is
-      });
+        body: JSON.stringify({ id: params.id, title, message }),
+      })
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Failed to update News');
+        const errorData = await res.json()
+        throw new Error(errorData.error || "Failed to update News")
       }
 
-      const responseData = await res.json(); // Optional: Capture the success response
-      console.log(responseData); // Log success response for debugging
-      router.push('/admin/news'); // Redirect to news page
+      router.push("/admin/news")
     } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      setError(err.message)
     }
-  };
+  }
 
-  // Render a loading animation when loading
   if (loading) {
     return (
-    <div className="flex items-center justify-center w-full">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+      <div className="flex items-center justify-center w-full h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="flex items-start justify-start">
-      <form onSubmit={handleSubmit} className="w-full max-w-2xl h-full shadow-lg rounded-md sm:p-6">
-        <h1 className="text-xl sm:text-2xl font-semibold mb-4">Edit News</h1>
-        {error && <p className="text-red-500 mb-4 text-sm sm:text-base">{error}</p>}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Title</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded-md text-xs sm:text-sm md:text-base"
-            required // Make this field required
-          />
-        </div>
-        <div className="mb-6"> {/* Margin below the message section */}
-          <label className="block text-sm font-medium mb-1">Message</label>
-          <div className="border border-gray-300 rounded-md overflow-hidden">
-            <Quill
-              value={message}
-              onChange={setMessage}
-              modules={quillModules}
-              className="text-xs max-w-screen-xl sm:text-sm md:text-base"
-              required // Ensure the message is required
-            />
-          </div>
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded-md text-xs sm:text-sm md:text-base"
-        >
-          Update
-        </button>
-      </form>
+    <div className="container mx-auto p-6">
+      <div className="flex flex-col lg:flex-row gap-6 items-start justify-center">
+        {/* Editor Section */}
+        <Card className={`w-full lg:w-1/2 shadow-lg rounded-2xl ${showPreview ? "hidden lg:block" : "block"}`}>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold text-center">Edit News Article</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {error && <div className="bg-destructive/10 text-destructive p-3 rounded-md text-sm">{error}</div>}
+              <div className="space-y-2">
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  id="title"
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter news title"
+                  className="w-full rounded-lg"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="message">Content</Label>
+                <div className="border rounded-lg overflow-hidden">
+                  <Quill
+                    id="message"
+                    value={message}
+                    onChange={setMessage}
+                    modules={quillModules}
+                    className="min-h-[200px]"
+                  />
+                </div>
+              </div>
+            </form>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <Button variant="outline" onClick={togglePreview} className="lg:hidden flex items-center gap-2 rounded-lg">
+              <Eye size={16} />
+              Preview
+            </Button>
+            <Button onClick={handleSubmit} className="ml-auto flex items-center gap-2 rounded-lg">
+              <Save size={16} />
+              Update Article
+            </Button>
+          </CardFooter>
+        </Card>
+
+        {/* Preview Section */}
+        <Card className={`w-full lg:w-1/2 shadow-lg rounded-2xl ${!showPreview ? "hidden lg:block" : "block"}`}>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold text-center">Preview</CardTitle>
+          </CardHeader>
+          <CardContent className="bg-card rounded-lg p-6">
+            <div className="flex justify-between items-center mb-4">
+              <Button variant="outline" onClick={togglePreview} className="lg:hidden flex items-center gap-2 rounded-lg">
+                <Eye size={16} />
+                Back to Editor
+              </Button>
+              <div className="flex items-center text-muted-foreground ml-auto">
+                <CalendarIcon size={16} className="mr-2" />
+                <span>{currentDate}</span>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h1 className="text-2xl font-bold">{title || "Your Title Will Appear Here"}</h1>
+              <div className="prose prose-sm max-w-none">
+                {message ? (
+                  <div dangerouslySetInnerHTML={{ __html: message }} />
+                ) : (
+                  <p className="text-muted-foreground italic">Your content will appear here as you type...</p>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
-  );
+  )
 }

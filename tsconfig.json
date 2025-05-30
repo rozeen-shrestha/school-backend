@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "incremental": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "components/*": ["src/components/*"],
+      "lib/*": ["src/lib/*"],
+      "hooks/*": ["src/hooks/*"],
+      "ui/*": ["src/components/ui/*"],
+      "utils/*": ["src/lib/utils/*"]
+    },
+    "plugins": [{ "name": "next" }]
+  },
+  "include": [
+    "next-env.d.ts",
+    "build/types/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx"
+, "src/components/frontend/footer.js"  ],
+  "exclude": ["node_modules"]
+}

@@ -25,7 +25,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import Fuse from 'fuse.js';
-import { Router } from 'next/router';
 import { useRouter } from 'next/navigation';
 
 const TeacherAdminPanel = () => {
