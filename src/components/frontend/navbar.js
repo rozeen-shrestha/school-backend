@@ -3,7 +3,7 @@
 import { useState, useContext, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Menu, X, Globe } from "lucide-react"
-import { LanguageContext } from "@/components/LanguageContext"
+import { LanguageContext } from "../LanguageContext"
 
 // Scrolling News Ticker Component
 const ScrollingNewsTicker = ({ news, language }) => {
@@ -46,9 +46,8 @@ const ScrollingNewsTicker = ({ news, language }) => {
   )
 }
 
-// Language Dropdown Component
 const LanguageDropdown = () => {
-  const { language, setLanguage } = useContext(LanguageContext)
+  const { language, toggleLanguage } = useContext(LanguageContext)
   const [isOpen, setIsOpen] = useState(false)
 
   const languages = [
@@ -57,10 +56,7 @@ const LanguageDropdown = () => {
   ]
 
   const handleLanguageChange = (newLanguage) => {
-    if (newLanguage !== language) {
-      setLanguage(newLanguage)
-    }
-    setIsOpen(false)
+toggleLanguage();
   }
 
   // Close dropdown when clicking outside
@@ -112,6 +108,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const { language } = useContext(LanguageContext)
+  const [dynamicNews, setDynamicNews] = useState([])
+  const [noticeTitle, setNoticeTitle] = useState({ en: "Important Notice", np: "महत्वपूर्ण सूचना" })
 
   const handleScroll = () => {
     const scrollTop = window.scrollY
@@ -140,6 +138,22 @@ const Navbar = () => {
     }
   }, [isOpen])
 
+  useEffect(() => {
+    const fetchNotice = async () => {
+      try {
+        const res = await fetch("/api/notice")
+        const data = await res.json()
+        if (data && data.success) {
+          setDynamicNews(data.news || [])
+          setNoticeTitle(data.title || { en: "Important Notice", np: "महत्वपूर्ण सूचना" })
+        }
+      } catch (e) {
+        // fallback to default
+      }
+    }
+    fetchNotice()
+  }, [])
+
   const content = {
     schoolName: {
       en: "Shree Saraswati Secondary School",
@@ -149,12 +163,11 @@ const Navbar = () => {
       en: "Dakaha-4, Sindhuli, Nepal",
       np: "डाकाहा-४, सिन्धुली, नेपाल",
     },
-    notice: { en: "Important Notice", np: "महत्वपूर्ण सूचना" },
-    news: [
-      { en: "Annual Sports Day Announced", np: "वार्षिक खेल दिवस घोषित" },
-      { en: "Science Exhibition Next Month", np: "अगले महीने विज्ञान प्रदर्शनी" },
-      { en: "New Computer Lab Inauguration", np: "नई कंप्यूटर प्रयोगशाला का उद्घाटन" },
-      { en: "Scholarship Applications Open", np: "छात्रवृत्ति आवेदन खुले" },
+    news: dynamicNews.length > 0 ? dynamicNews : [
+      { en: "Annual Sports Day Announced", np: "वार्षिक खेलकुद दिवसको घोषणा गरिएको छ।" },
+      { en: "Science Exhibition Next Month", np: "अर्को महिनामा विज्ञान प्रदर्शनी आयोजना हुनेछ।" },
+      { en: "New Computer Lab Inauguration", np: "नयाँ कम्प्युटर प्रयोगशाला उद्घाटन गरिएको छ।" },
+      { en: "Scholarship Applications Open", np: "छात्रवृत्तिका लागि आवेदन खुला गरिएको छ।" },
     ],
     nav: {
       home: { en: "Home", np: "मुख्य पृष्ठ", link: "/", id: "home" },
@@ -244,7 +257,7 @@ const Navbar = () => {
                     <p className="text-sm text-gray-200 hidden md:block">{getText(content.address)}</p>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <p className="font-bold text-xl pl-6 hidden md:block">{getText(content.notice)}</p>
+                    <p className="font-bold text-xl pl-6 hidden md:block">{noticeTitle[language]}</p>
                     <div className="mt-2 hidden md:block w-96 h-6 overflow-hidden">
                       <ScrollingNewsTicker news={content.news} language={language} />
                     </div>

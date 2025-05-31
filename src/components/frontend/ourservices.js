@@ -17,7 +17,7 @@ const OURSERVICES = () => {
       title: { en: "Bus Service", np: "बस सेवा" },
       description: {
         en: "Safe and reliable transportation for students with experienced drivers and well-maintained vehicles.",
-        np: "विद्यार्थीहरूको लागि सुरक्षित र भरपर्दो यातायात सेवा, अनुभवी चालकहरू र राम्रोसँग मर्मत गरिएका सवारी साधनहरू सहित।",
+        np: "अनुभवी चालक र राम्रो अवस्थामा रहेका सवारी साधनसहित विद्यार्थीहरूका लागि सुरक्षित र भरपर्दो यातायात सेवा।",
       },
       image: "/placeholder.svg?height=200&width=400",
       icon: <Bus className="h-6 w-6" />,
@@ -28,7 +28,7 @@ const OURSERVICES = () => {
       title: { en: "Library", np: "पुस्तकालय" },
       description: {
         en: "A vast collection of books and resources for students with quiet study spaces and digital resources.",
-        np: "विद्यार्थीहरूको लागि किताब र स्रोतहरूको ठूलो सङ्ग्रह, शान्त अध्ययन स्थान र डिजिटल स्रोतहरू सहित।",
+        np: "विद्यार्थीहरूका लागि किताब र स्रोतहरूको विशाल सङ्ग्रह, शान्त अध्ययन कक्ष र डिजिटल स्रोतहरू उपलब्ध।",
       },
       image: "/placeholder.svg?height=200&width=400",
       icon: <BookOpen className="h-6 w-6" />,
@@ -39,7 +39,7 @@ const OURSERVICES = () => {
       title: { en: "Laboratories", np: "प्रयोगशाला" },
       description: {
         en: "Well-equipped labs for practical learning with modern equipment and expert guidance.",
-        np: "व्यावहारिक सिकाइका लागि राम्रोसँग सुसज्जित प्रयोगशालाहरू, आधुनिक उपकरण र विशेषज्ञ मार्गदर्शन सहित।",
+        np: "आधुनिक उपकरण र विज्ञ मार्गदर्शनसहित व्यावहारिक सिकाइका लागि राम्रोसँग सुसज्जित प्रयोगशालाहरू।",
       },
       image: "/placeholder.svg?height=200&width=400",
       icon: <Flask className="h-6 w-6" />,
@@ -50,7 +50,7 @@ const OURSERVICES = () => {
       title: { en: "Hostel", np: "होस्टल" },
       description: {
         en: "Comfortable and secure accommodation for students with 24/7 supervision and homely environment.",
-        np: "विद्यार्थीहरूको लागि आरामदायक र सुरक्षित आवास, २४/७ निगरानी र घरेलु वातावरण सहित।",
+        np: "२४ घण्टा निगरानी र घरजस्तो वातावरणसहित विद्यार्थीहरूका लागि आरामदायक र सुरक्षित आवास।",
       },
       image: "/placeholder.svg?height=200&width=400",
       icon: <Home className="h-6 w-6" />,
@@ -61,7 +61,7 @@ const OURSERVICES = () => {
       title: { en: "Cafeteria", np: "क्याफेटेरिया" },
       description: {
         en: "Healthy and delicious meals for students and staff with nutritious options and clean environment.",
-        np: "विद्यार्थीहरू र कर्मचारीहरूको लागि स्वस्थ र स्वादिलो खाना, पौष्टिक विकल्पहरू र सफा वातावरण सहित।",
+        np: "विद्यार्थी र कर्मचारीका लागि पौष्टिक विकल्प र सफा वातावरणसहित स्वस्थ र स्वादिलो खाना।",
       },
       image: "/placeholder.svg?height=200&width=400",
       icon: <Coffee className="h-6 w-6" />,

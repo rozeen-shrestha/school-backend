@@ -6,26 +6,26 @@ import { LanguageContext } from '@/components/LanguageContext'; // Importing the
 const CCONTACT = () => {
   const { language } = useContext(LanguageContext); // Getting the language from context
 
-  const translations = {
-    en: {
-      title: "Schedule a Date to Contact",
-      guardianName: "Guardian's Name",
-      guardianNumber: "Guardian's Number",
-      childName: "Child's Name",
-      childAge: "Child's Age",
-      message: "Message",
-      submit: "Submit",
-    },
-    np: {
-      title: "सम्पर्क गर्नको लागि मिति तय गर्नुहोस्",
-      guardianName: "अभिभावकको नाम",
-      guardianNumber: "अभिभावकको नम्बर",
-      childName: "बच्चाको नाम",
-      childAge: "बच्चाको उमेर",
-      message: "सन्देश",
-      submit: "पेश गर्नुहोस्",
-    },
-  };
+const translations = {
+  en: {
+    title: "Schedule a Date to Contact",
+    guardianName: "Guardian's Name",
+    guardianNumber: "Guardian's Number",
+    childName: "Child's Name",
+    childAge: "Child's Age",
+    message: "Message",
+    submit: "Submit",
+  },
+  np: {
+    title: "सम्पर्कका लागि मिति तय गर्नुहोस्",
+    guardianName: "अभिभावकको नाम",
+    guardianNumber: "अभिभावकको नम्बर",
+    childName: "बालक/बालिकाको नाम",
+    childAge: "बालक/बालिकाको उमेर",
+    message: "सन्देश",
+    submit: "बुझाउनुहोस्",
+  },
+};
 
   return (
     <div>

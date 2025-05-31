@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Image,UserRoundPen, Home, LineChart, CalendarCheck2, Users, FileCheck, Menu, ChevronDown, ChevronUp, ArrowRightFromLine, PanelLeftClose, LibraryBig } from 'lucide-react';
+import { Image,UserRoundPen, Home, LineChart, CalendarCheck2, Users, FileCheck, Menu, ChevronDown, ChevronUp, ArrowRightFromLine, PanelLeftClose, LibraryBig, Bell} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { signOut } from 'next-auth/react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -20,7 +20,8 @@ const iconComponents = {
   Menu,
   ChevronDown,
   ChevronUp,
-  Image
+  Image,
+  Bell
 };
 
 const ADMINUI = ({ children }) => {

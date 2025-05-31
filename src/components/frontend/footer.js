@@ -13,12 +13,12 @@ const Footer = () => {
 
 
   const quickLinks = [
-    { label: { en: "Home", np: "मुख्य पृष्ठ" }, url: "/" },
+    { label: { en: "Home", np: "गृहपृष्ठ" }, url: "/" },
     { label: { en: "Gallery", np: "ग्यालेरी" }, url: "/gallery" },
-    { label: { en: "Our Programs", np: "हाम्रो संकाय" }, url: "/programs" },
-    { label: { en: "Our Services", np: "हाम्रो सेवाहरू" }, url: "/services" },
-    { label: { en: "Our Teachers", np: "हाम्रो शिक्षक" }, url: "/teachers" },
-    { label: { en: "Our Achievements", np: "हाम्रो उपलब्धिहरू" }, url: "/achievements" },
+    { label: { en: "Our Programs", np: "हाम्रा कार्यक्रमहरू" }, url: "/programs" },
+    { label: { en: "Our Services", np: "हाम्रा सेवाहरू" }, url: "/services" },
+    { label: { en: "Our Teachers", np: "हाम्रा शिक्षकहरू" }, url: "/teachers" },
+    { label: { en: "Our Achievements", np: "हाम्रा उपलब्धिहरू" }, url: "/achievements" },
     { label: { en: "News", np: "समाचार" }, url: "/news" },
     { label: { en: "Contact", np: "सम्पर्क" }, url: "/contact" },
   ]
@@ -26,7 +26,7 @@ const Footer = () => {
   const socialLinks = [
     {
       label: { en: "Facebook", np: "फेसबुक" },
-      url: "https://www.facebook.com/relianceintlacademy",
+      url: "https://www.facebook.com/",
       icon: <Facebook className="h-4 w-4" />,
     },
   ]
@@ -34,12 +34,12 @@ const Footer = () => {
   const contactInfo = [
     {
       icon: <MapPin className="h-5 w-5" />,
-      text: { en: "Dakaha-4, Sindhuli, Nepal", np: "डाकाहा-४, सिन्धुली, नेपाल" },
+      text: { en: "Dakaha-4, Sindhuli, Nepal", np: "डकाहा-४, सिन्धुली, नेपाल" },
       type: "address",
     },
     {
       icon: <Phone className="h-5 w-5" />,
-      text: { en: "981199494 / 9707432740", np: "981199494 / 9707432740" },
+      text: { en: "981199494 / 9707432740", np: "९८११९९४९४ / ९७०७४३२७४०" },
       type: "phone",
     },
     {
@@ -100,11 +100,6 @@ const Footer = () => {
               <h3 className="text-xl font-bold mb-3 text-blue-100">
                 {language === "en" ? "Shree Saraswati Secondary School" : "श्री सरस्वती माध्यमिक विद्यालय"}
               </h3>
-              <p className="text-blue-200 text-sm mb-4 max-w-xs">
-                {language === "en"
-                  ? "Nurturing minds, building futures, creating leaders of tomorrow."
-                  : "मन पोषण गर्दै, भविष्य निर्माण गर्दै, भोलिका नेताहरू सिर्जना गर्दै।"}
-              </p>
               <div className="flex space-x-3">
                 {socialLinks.map((social, index) => (
                   <motion.a
@@ -125,7 +120,7 @@ const Footer = () => {
             <motion.div variants={itemVariants}>
               <h4 className="text-lg font-semibold mb-4 text-blue-100 flex items-center">
                 <ChevronRight className="h-5 w-5 mr-1" />
-                {language === "en" ? "Quick Links" : "चाँडो पहुँच"}
+                {language === "en" ? "Quick Links" : "छिटो लिङ्कहरू"}
               </h4>
               <ul className="space-y-2">
                 {quickLinks.map((link, index) => (
@@ -146,14 +141,9 @@ const Footer = () => {
             <motion.div variants={itemVariants}>
               <h4 className="text-lg font-semibold mb-4 text-blue-100 flex items-center">
                 <Globe className="h-5 w-5 mr-2" />
-                {language === "en" ? "Connect With Us" : "हामीसँग जोडिनुहोस्"}
+                {language === "en" ? "Connect With Us" : "हामीसँग जडान हुनुहोस्"}
               </h4>
               <div className="space-y-3">
-                <p className="text-blue-200 text-sm">
-                  {language === "en"
-                    ? "Follow us on social media for updates and news"
-                    : "अपडेट र समाचारको लागि सामाजिक सञ्जालमा हामीलाई फलो गर्नुहोस्"}
-                </p>
                 {socialLinks.map((link, index) => (
                   <motion.a
                     key={index}
@@ -215,13 +205,15 @@ const Footer = () => {
               <span>© 2024</span>
               <Heart className="h-4 w-4 mx-2 text-red-400" />
               <span>{language === "en" ? "Shree Saraswati Secondary School" : "श्री सरस्वती माध्यमिक विद्यालय"}</span>
-              <span className="ml-2">{language === "en" ? "All rights reserved." : "सबै अधिकार सुरक्षित।"}</span>
+              <span className="ml-2">{language === "en" ? "All rights reserved." : "सबै अधिकार सुरक्षित छन्।"}</span>
             </div>
 
             <div className="flex items-center space-x-4">
-              <Badge variant="secondary" className="bg-blue-800 text-blue-100 hover:bg-blue-700">
-                {language === "en" ? "Made with ❤️ in Nepal" : "नेपालमा ❤️ सँग बनाइएको"}
-              </Badge>
+                <Badge variant="secondary" className="bg-blue-800 text-blue-100 hover:bg-blue-700">
+                {language === "en"
+                    ? "Made with ❤️ by Innowix Studios"
+                    : "इनोविक्स स्टुडियो द्वारा ❤️ सँग तयार पारिएको"}
+                </Badge>
               <Button
                 onClick={toggleLanguage}
                 variant="outline"

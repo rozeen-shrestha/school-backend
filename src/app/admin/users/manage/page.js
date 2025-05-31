@@ -1,14 +1,17 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2 } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
 
 export default function ManageUsersPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -28,13 +31,23 @@ export default function ManageUsersPage() {
   }, []);
 
   const handleEdit = (userId) => {
-    console.log('Edit user:', userId);
-    // Implement edit logic
+    router.push(`/admin/users/edit/${userId}`);
   };
 
-  const handleDelete = (userId) => {
-    console.log('Delete user:', userId);
-    // Implement delete logic
+  const handleDelete = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    try {
+      const res = await fetch(`/api/users?userId=${userId}`, { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) {
+        setUsers(prev => prev.filter(u => u._id !== userId));
+        toast({ title: "User deleted", description: "User has been deleted." });
+      } else {
+        toast({ title: "Error", description: data.error || "Failed to delete user", variant: "destructive" });
+      }
+    } catch (e) {
+      toast({ title: "Error", description: "Failed to delete user", variant: "destructive" });
+    }
   };
 
   return (

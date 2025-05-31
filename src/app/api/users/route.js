@@ -141,9 +141,32 @@ export async function GET(request) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const search = searchParams.get('search') || '';
+    const userId = searchParams.get('userId');
 
     const client = await clientPromise;
     const db = client.db(dbName);
+
+    if (userId) {
+      // Fetch single user by ID
+      const user = await db.collection('users')
+        .findOne({ _id: new ObjectId(userId) }, { projection: { password: 0 } });
+      if (!user) {
+        return new Response(JSON.stringify({ error: "User not found" }), {
+          status: 404,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      return new Response(
+        JSON.stringify({
+          success: true,
+          data: { users: user }
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
 
     const query = search
       ? {

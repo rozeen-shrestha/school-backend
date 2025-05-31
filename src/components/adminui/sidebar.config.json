@@ -20,6 +20,17 @@
     ]
   },
   {
+    "href": "/admin/notice",
+    "label": "Notice",
+    "icon": "Bell",
+    "dropdown": [
+      {
+        "href": "/admin/notice/manage",
+        "label": "Manage Notice"
+      }
+    ]
+  },
+  {
     "href": "/admin/media",
     "label": "Media",
     "icon": "Image",
