@@ -31,9 +31,11 @@ const isValidImageFile = (file) => {
 const isValidPdfFile = (file) => file.type === 'application/pdf';
 
 export async function POST(request) {
+  console.log('[API] [elibrary/addbook] POST request received');
   const token = await getToken({ req: request });
 
   if (token?.role != 'admin') {
+    console.warn('[API] [elibrary/addbook] Unauthorized access attempt');
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -51,14 +53,17 @@ export async function POST(request) {
     const pdfFile = formData.get('pdfFile');
 
     if (!title || !author || !ISBN || !publicationYear || !language) {
+      console.warn('[API] [elibrary/addbook] Missing required fields');
       return NextResponse.json({ error: 'Title, author, ISBN, publication year, and language are required' }, { status: 400 });
     }
 
     if (!coverImage || !isValidImageFile(coverImage)) {
+      console.warn('[API] [elibrary/addbook] Invalid or missing cover image');
       return NextResponse.json({ error: 'Invalid or missing cover image' }, { status: 400 });
     }
 
     if (!pdfFile || !isValidPdfFile(pdfFile)) {
+      console.warn('[API] [elibrary/addbook] Invalid or missing PDF file');
       return NextResponse.json({ error: 'Invalid or missing PDF file' }, { status: 400 });
     }
 
@@ -78,6 +83,7 @@ export async function POST(request) {
     const coverPath = join(libraryDir, 'covers', coverFilename);
 
     await writeFile(coverPath, coverBuffer);
+    console.log(`[API] [elibrary/addbook] Cover image saved: ${coverPath}`);
     const coverImageUrl = `/api/libraryfiles/covers/${coverFilename}`;
 
     // Handle PDF upload
@@ -87,6 +93,7 @@ export async function POST(request) {
     const pdfPath = join(libraryDir, 'books', pdfFilename);
 
     await writeFile(pdfPath, pdfBuffer);
+    console.log(`[API] [elibrary/addbook] PDF file saved: ${pdfPath}`);
     const pdfUrl = `/api/libraryfiles/books/${pdfFilename}`;
 
     const client = await clientPromise;
@@ -117,6 +124,7 @@ export async function POST(request) {
       addedAt: new Date(),
       lastUpdated: new Date(),
     });
+    console.log(`[API] [elibrary/addbook] Book inserted with _id: ${result.insertedId}`);
 
     return NextResponse.json({
       success: true,
@@ -127,7 +135,7 @@ export async function POST(request) {
     }, { status: 201 });
 
   } catch (error) {
-    console.error('Error adding book:', error);
+    console.error('[API] [elibrary/addbook] Error adding book:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

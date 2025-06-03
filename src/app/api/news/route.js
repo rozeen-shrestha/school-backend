@@ -15,13 +15,18 @@ if (!clientPromise) {
 export const dynamic = 'force-dynamic'; // Ensure this route is treated as dynamic
 
 export async function GET() {
+  console.log('[API] [news] GET request received');
   try {
     const client = await clientPromise;
     const db = client.db(dbName);
 
-    // Fetch all news from the 'news' collection
-    const news = await db.collection('news').find({}, { projection: { title: 1, message: 1, lastEdited: 1 } }).toArray();
+    // Fetch all news from the 'news' collection, sorted by lastEdited descending
+    const news = await db.collection('news')
+      .find({}, { projection: { title: 1, message: 1, lastEdited: 1, images: 1 } })
+      .sort({ lastEdited: -1 })
+      .toArray();
 
+    console.log('[API] [news] News fetched successfully');
     return new Response(JSON.stringify(news), {
       status: 200,
       headers: {

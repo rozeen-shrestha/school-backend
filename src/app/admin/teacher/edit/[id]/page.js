@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 
-const AddTeacherForm = ({ onSubmit }) => {
+const AddTeacherForm = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isCustomSubject, setIsCustomSubject] = useState(false); // State for custom subject input

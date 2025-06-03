@@ -26,8 +26,8 @@ const isValidImageFile = (file) => {
 export async function POST(request) {
   const token = await getToken({ req: request });
 
-
   if (token?.role != 'admin') {
+    console.warn('[API] [media/photo/upload] Unauthorized access attempt');
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -37,10 +37,12 @@ export async function POST(request) {
     const category = formData.get('category');
 
     if (files.length === 0) {
+      console.warn('[API] [media/photo/upload] No files uploaded');
       return NextResponse.json({ error: 'No files uploaded' }, { status: 400 });
     }
 
     if (!category) {
+      console.warn('[API] [media/photo/upload] Category is required');
       return NextResponse.json({ error: 'Category is required' }, { status: 400 });
     }
 
@@ -48,9 +50,10 @@ export async function POST(request) {
 
     try {
       await mkdir(uploadDir, { recursive: true });
+      console.log(`[API] [media/photo/upload] Directory ensured: ${uploadDir}`);
     } catch (err) {
       if (err.code !== 'EEXIST') {
-        console.error('Error creating directory:', err);
+        console.error('[API] [media/photo/upload] Error creating directory:', err);
         return NextResponse.json({ error: 'Failed to create upload directory' }, { status: 500 });
       }
     }
@@ -61,6 +64,7 @@ export async function POST(request) {
 
     const uploadResults = await Promise.all(files.map(async (file) => {
       if (!isValidImageFile(file)) {
+        console.warn(`[API] [media/photo/upload] Invalid file type: ${file.name}`);
         return { error: `Invalid file type for ${file.name}`, filename: file.name };
       }
 
@@ -82,6 +86,7 @@ export async function POST(request) {
           uploadDate: currentDate
         });
 
+        console.log(`[API] [media/photo/upload] File uploaded: ${filePath}`);
         return {
           _id: result.insertedId,
           originalFilename: file.name,
@@ -92,7 +97,7 @@ export async function POST(request) {
           uploadDate: currentDate
         };
       } catch (err) {
-        console.error('Error processing file:', file.name, err);
+        console.error('[API] [media/photo/upload] Error processing file:', file.name, err);
         return { error: `Failed to save file ${file.name}`, filename: file.name };
       }
     }));

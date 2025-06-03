@@ -1,5 +1,3 @@
-
-
 import { getToken } from "next-auth/jwt";
 import { MongoClient, ObjectId } from "mongodb";
 
@@ -15,6 +13,7 @@ if (!clientPromise) {
 }
 
 export async function DELETE(request) {
+  console.log('[API] [news/delete] DELETE request received');
   const token = await getToken({ req: request });
 
   if (token?.role != 'admin') {
@@ -57,6 +56,7 @@ export async function DELETE(request) {
       });
     }
 
+    console.log(`[API] [news/delete] News deleted: ${id}`);
     return new Response(
       JSON.stringify({ success: true, message: "Record deleted successfully" }),
       {

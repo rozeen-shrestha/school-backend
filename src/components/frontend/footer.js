@@ -26,7 +26,7 @@ const Footer = () => {
   const socialLinks = [
     {
       label: { en: "Facebook", np: "फेसबुक" },
-      url: "https://www.facebook.com/",
+      url: "https://www.facebook.com/saraswati.secondary.school.dakaha",
       icon: <Facebook className="h-4 w-4" />,
     },
   ]
@@ -202,7 +202,7 @@ const Footer = () => {
             className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"
           >
             <div className="flex items-center text-blue-200 text-sm">
-              <span>© 2024</span>
+              <span>© 2025</span>
               <Heart className="h-4 w-4 mx-2 text-red-400" />
               <span>{language === "en" ? "Shree Saraswati Secondary School" : "श्री सरस्वती माध्यमिक विद्यालय"}</span>
               <span className="ml-2">{language === "en" ? "All rights reserved." : "सबै अधिकार सुरक्षित छन्।"}</span>

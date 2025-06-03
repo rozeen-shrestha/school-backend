@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 
-export function useMediaQuery(query: string): boolean {
+export function useMediaQuery(query) {
   const [matches, setMatches] = useState(false)
 
   useEffect(() => {
@@ -12,7 +12,7 @@ export function useMediaQuery(query: string): boolean {
     setMatches(media.matches)
 
     // Define callback for media query changes
-    const listener = (event: MediaQueryListEvent) => {
+    const listener = (event) => {
       setMatches(event.matches)
     }
 

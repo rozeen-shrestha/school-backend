@@ -15,9 +15,11 @@ if (!clientPromise) {
 }
 
 export async function GET(request, { params }) {
+  console.log('[API] [elibrary/[id]] GET request received');
   const token = await getToken({ req: request });
 
   if (!token) {
+    console.warn('[API] [elibrary/[id]] Unauthorized access attempt');
     return new Response("Unauthorized", {
       status: 401,
       headers: {
@@ -30,6 +32,7 @@ export async function GET(request, { params }) {
     const { id } = params;
 
     if (!id) {
+      console.warn('[API] [elibrary/[id]] Book ID is required');
       return new Response("Book ID is required", {
         status: 400,
         headers: {
@@ -45,6 +48,7 @@ export async function GET(request, { params }) {
     const book = await db.collection('books').findOne({ _id: new ObjectId(id) });
 
     if (!book) {
+      console.warn(`[API] [elibrary/[id]] Book not found: ${id}`);
       return new Response(
   JSON.stringify(book), // Directly return the book object
   {
@@ -63,6 +67,7 @@ export async function GET(request, { params }) {
     if (book.addedAt) book.addedAt = book.addedAt.toISOString();
     if (book.lastUpdated) book.lastUpdated = book.lastUpdated.toISOString();
 
+    console.log(`[API] [elibrary/[id]] Book found: ${id}`);
     return new Response(
         JSON.stringify(book), // Directly return the book object
         {
@@ -73,7 +78,7 @@ export async function GET(request, { params }) {
         }
       );
   } catch (error) {
-    console.error("Error fetching book:", error);
+    console.error('[API] [elibrary/[id]] Error fetching book:', error);
 
     return new Response(
       JSON.stringify({ error: "Failed to fetch book" }),

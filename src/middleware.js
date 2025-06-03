@@ -12,6 +12,8 @@ export async function middleware(req) {
   const token = await getToken({ req });
   const { pathname } = req.nextUrl;
 
+  // Only check JWT/session, no DB access in Edge Runtime
+
   // Redirect to /admin if admin is logged in and tries to access /login/admin
   if (routes.adminLogin.some(route => pathname.startsWith(route))) {
     if (token?.role === 'admin') {
@@ -46,6 +48,17 @@ export async function middleware(req) {
 
   // Default behavior: allow access
   return NextResponse.next();
+}
+
+// Helper to handle unauthenticated redirects based on route
+function handleUnauthenticated(pathname, url) {
+  if (pathname.startsWith('/admin')) {
+    return NextResponse.redirect(new URL('/login/admin', url));
+  }
+  if (pathname.startsWith('/elibrary')) {
+    return NextResponse.redirect(new URL('/login/user', url));
+  }
+  return NextResponse.redirect(new URL('/login/user', url));
 }
 
 export const config = {

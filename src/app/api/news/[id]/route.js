@@ -15,6 +15,7 @@ if (!clientPromise) {
 export const dynamic = 'force-dynamic'; // Ensure this route is treated as dynamic
 
 export async function GET(request, { params }) {
+  console.log('[API] [news/[id]] GET request received');
   const { id } = params; // Get the ID from the request parameters
 
   try {
@@ -32,7 +33,7 @@ export async function GET(request, { params }) {
     }
 
     // Fetch the specific news item from the 'news' collection
-    const newsItem = await db.collection('news').findOne({ _id: new ObjectId(id) }, { projection: { title: 1, message: 1, lastEdited: 1 } });
+    const newsItem = await db.collection('news').findOne({ _id: new ObjectId(id) }, { projection: { title: 1, message: 1, lastEdited: 1, images: 1 } });
 
     if (!newsItem) {
       return new Response(JSON.stringify({ error: 'News item not found' }), {
@@ -43,6 +44,7 @@ export async function GET(request, { params }) {
       });
     }
 
+    console.log(`[API] [news/[id]] News item found: ${id}`);
     return new Response(JSON.stringify(newsItem), {
       status: 200,
       headers: {

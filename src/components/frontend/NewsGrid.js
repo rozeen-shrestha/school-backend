@@ -9,7 +9,8 @@ const NewsGrid = ({ newsData, onNewsClick }) => {
           <div key={news.id} className="h-full" onClick={() => onNewsClick(news.id)}>
             <NewsCard
               title={news.title}
-              date={news.date}
+              date={news.lastEdited}
+              images={news.images}
             />
           </div>
         ))}

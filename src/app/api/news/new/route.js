@@ -13,6 +13,7 @@ if (!clientPromise) {
 }
 
 export async function POST(request) {
+  console.log('[API] [news/new] POST request received');
   const token = await getToken({ req: request });
 
   if (token?.role != 'admin') {
@@ -26,7 +27,7 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
-    const { title, message } = body;
+    const { title, message, images } = body; // images: array of image paths
 
     if (!title || !message) {
       return new Response("Title and message are required", {
@@ -40,18 +41,20 @@ export async function POST(request) {
     const client = await clientPromise;
     const db = client.db(dbName);
 
-    // Get the current date and format it as YYYY-MM-DD
-    const currentDate = new Date().toISOString().split('T')[0];
+    // Save lastEdited as ISO string
+    const currentDate = new Date().toISOString();
 
-    // Insert the new news into the 'news' collection with the current date
+    // Insert the new news into the 'news' collection with images
     const result = await db.collection('news').insertOne({
       title,
       message,
-      lastEdited: currentDate // Add the current date in YYYY-MM-DD format
+      images: Array.isArray(images) ? images : [],
+      lastEdited: currentDate
     });
 
+    console.log(`[API] [news/new] News inserted with _id: ${result.insertedId}`);
     return new Response(
-      JSON.stringify({ success: true, data: { _id: result.insertedId, title, message, lastEdited: currentDate } }),
+      JSON.stringify({ success: true, data: { _id: result.insertedId, title, message, images: Array.isArray(images) ? images : [], lastEdited: currentDate } }),
       {
         status: 201,
         headers: {

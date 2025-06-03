@@ -81,7 +81,7 @@ export async function POST(request) {
       });
     }
 
-    const result = await db.collection('categories').insertOne({ name: category });
+    const result = await db.collection('categories').insertOne({ name: category, uploads: [] });
 
     return new Response(JSON.stringify({ message: 'Category created', categoryId: result.insertedId }), {
       status: 201,

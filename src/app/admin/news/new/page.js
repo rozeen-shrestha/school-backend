@@ -9,15 +9,19 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CalendarIcon, Save, Eye } from "lucide-react"
+import Image from "next/image"
 
 // Dynamically import the Quill editor
 const Quill = dynamic(() => import("react-quill"), { ssr: false })
+const SCHOOL_LOGO = "/school-logo.png" // Place your logo in /public
 
 export default function NewsForm() {
   const [title, setTitle] = useState("")
   const [message, setMessage] = useState("")
   const [error, setError] = useState(null)
   const [showPreview, setShowPreview] = useState(false)
+  const [images, setImages] = useState([])
+  const [uploading, setUploading] = useState(false)
   const router = useRouter()
 
   const currentDate = new Date().toLocaleDateString("en-US", {
@@ -48,6 +52,32 @@ export default function NewsForm() {
     setShowPreview(!showPreview)
   }
 
+  const handleImageChange = async (e) => {
+    const files = Array.from(e.target.files)
+    if (!files.length) return
+    setUploading(true)
+    const formData = new FormData()
+    files.forEach(f => formData.append('files', f))
+    const res = await fetch('/api/news/image-upload', { method: 'POST', body: formData })
+    const data = await res.json()
+    if (data.successfulUploads) {
+      setImages(prev => [...prev, ...data.successfulUploads.map(f => f.path)])
+    }
+    setUploading(false)
+  }
+
+  const handleRemoveImage = async (img) => {
+    setImages(prev => prev.filter(i => i !== img))
+    // Delete from server if it's a news image
+    if (img.startsWith('/news/')) {
+      await fetch('/api/news/image-upload', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: img }),
+      })
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
@@ -68,7 +98,7 @@ export default function NewsForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, message }),
+        body: JSON.stringify({ title, message, images }),
       })
 
       if (!res.ok) {
@@ -115,6 +145,31 @@ export default function NewsForm() {
                   />
                 </div>
               </div>
+              <div className="space-y-2">
+                <Label>Images</Label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                  className="block"
+                />
+                {uploading && <div className="text-sm text-muted-foreground">Uploading...</div>}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {images.map((img, idx) => (
+                    <div key={img} className="relative w-20 h-20">
+                      <Image
+                        src={img ? `/api/file${img.startsWith('/') ? img : '/' + img}` : SCHOOL_LOGO}
+                        alt={`news-img-${idx}`}
+                        fill
+                        className="object-cover rounded"
+                        unoptimized={!!img}
+                      />
+                      <button type="button" onClick={() => handleRemoveImage(img)} className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">×</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </form>
           </CardContent>
           <CardFooter className="flex justify-between">
@@ -148,6 +203,16 @@ export default function NewsForm() {
 
             <div className="space-y-4">
               <h1 className="text-2xl font-bold">{title || "Your Title Will Appear Here"}</h1>
+              <div className="flex gap-2">
+                <Image
+                  src={images[0] ? `/api/file${images[0].startsWith('/') ? images[0] : '/' + images[0]}` : SCHOOL_LOGO}
+                  alt="thumbnail"
+                  width={120}
+                  height={80}
+                  className="rounded object-cover"
+                  unoptimized={!!images[0]}
+                />
+              </div>
               <div className="prose prose-sm max-w-none">
                 {message ? (
                   <div dangerouslySetInnerHTML={{ __html: message }} />

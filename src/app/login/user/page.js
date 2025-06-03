@@ -41,13 +41,8 @@ export default function Login() {
         // Fetch the session to check the role of the user
         const session = await fetch("/api/auth/session").then((res) => res.json())
 
-        if (session?.user?.role === "admin") {
-          router.push("/admin") // Redirect to admin page
-        } else if (session?.user?.role === "user") {
-          router.push("/elibrary/dashboard") // Redirect to user page
-        } else {
-          router.push("/") // Fallback redirect
-        }
+        // Redirect both admin and user to /elibrary/dashboard
+        router.push("/elibrary/dashboard")
       }
     } catch (error) {
       setError("An unexpected error occurred. Please try again.")

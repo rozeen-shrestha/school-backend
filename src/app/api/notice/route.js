@@ -19,10 +19,8 @@ export async function GET() {
     const client = await clientPromise;
     const db = client.db(dbName);
 
-    // Only one notice document (singleton pattern)
     const notice = await db.collection("notice").findOne({});
     if (!notice) {
-      // fallback default
       return new Response(JSON.stringify({
         success: true,
         title: { en: "Important Notice", np: "महत्वपूर्ण सूचना" },

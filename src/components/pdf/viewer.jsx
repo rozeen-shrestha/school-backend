@@ -26,25 +26,19 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 // Set the worker source for PDF.js
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
-interface PdfViewerProps {
-  src: string
-  title?: string
-  className?: string
-}
+export default function PdfViewer({ src, title = "Document", className }) {
+  const [numPages, setNumPages] = useState()
+  const [pageNumber, setPageNumber] = useState(1)
+  const [scale, setScale] = useState(1.0)
+  const [rotation, setRotation] = useState(0)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [containerWidth, setContainerWidth] = useState(0)
+  const [fitToWidth, setFitToWidth] = useState(true)
 
-export default function PdfViewer({ src, title = "Document", className }: PdfViewerProps) {
-  const [numPages, setNumPages] = useState<number>()
-  const [pageNumber, setPageNumber] = useState<number>(1)
-  const [scale, setScale] = useState<number>(1.0)
-  const [rotation, setRotation] = useState<number>(0)
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
-  const [containerWidth, setContainerWidth] = useState<number>(0)
-  const [fitToWidth, setFitToWidth] = useState<boolean>(true)
-
-  const containerRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef(null)
+  const contentRef = useRef(null)
 
   // Responsive state
   const isMobile = useMediaQuery("(max-width: 640px)")
@@ -103,7 +97,7 @@ export default function PdfViewer({ src, title = "Document", className }: PdfVie
 
   // Handle fullscreen mode
   useEffect(() => {
-    const handleEsc = (event: KeyboardEvent) => {
+    const handleEsc = (event) => {
       if (event.key === "Escape" && isFullscreen) {
         setIsFullscreen(false)
       }
@@ -113,14 +107,14 @@ export default function PdfViewer({ src, title = "Document", className }: PdfVie
     return () => window.removeEventListener("keydown", handleEsc)
   }, [isFullscreen])
 
-  const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
+  const onDocumentLoadSuccess = useCallback(({ numPages }) => {
     setNumPages(numPages)
     setPageNumber(1)
     setIsLoading(false)
     setError(null)
   }, [])
 
-  const onDocumentLoadError = useCallback((error: Error) => {
+  const onDocumentLoadError = useCallback((error) => {
     setError(error.message)
     setIsLoading(false)
   }, [])
@@ -176,7 +170,7 @@ export default function PdfViewer({ src, title = "Document", className }: PdfVie
   }, [])
 
   const goToPage = useCallback(
-    (page: number) => {
+    (page) => {
       if (page >= 1 && numPages && page <= numPages) {
         setPageNumber(page)
       }
@@ -186,7 +180,7 @@ export default function PdfViewer({ src, title = "Document", className }: PdfVie
 
   // Keyboard navigation
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e) => {
       if (e.key === "ArrowRight") {
         nextPage()
       } else if (e.key === "ArrowLeft") {

@@ -19,7 +19,7 @@ const OURSERVICES = () => {
         en: "Safe and reliable transportation for students with experienced drivers and well-maintained vehicles.",
         np: "अनुभवी चालक र राम्रो अवस्थामा रहेका सवारी साधनसहित विद्यार्थीहरूका लागि सुरक्षित र भरपर्दो यातायात सेवा।",
       },
-      image: "/placeholder.svg?height=200&width=400",
+      image: "/placeholder.svg",
       icon: <Bus className="h-6 w-6" />,
       color: "bg-blue-100 text-blue-700",
       hoverColor: "group-hover:bg-blue-200 group-hover:text-blue-800",
@@ -30,7 +30,7 @@ const OURSERVICES = () => {
         en: "A vast collection of books and resources for students with quiet study spaces and digital resources.",
         np: "विद्यार्थीहरूका लागि किताब र स्रोतहरूको विशाल सङ्ग्रह, शान्त अध्ययन कक्ष र डिजिटल स्रोतहरू उपलब्ध।",
       },
-      image: "/placeholder.svg?height=200&width=400",
+      image: "/placeholder.svg",
       icon: <BookOpen className="h-6 w-6" />,
       color: "bg-sky-100 text-sky-700",
       hoverColor: "group-hover:bg-sky-200 group-hover:text-sky-800",
@@ -41,7 +41,7 @@ const OURSERVICES = () => {
         en: "Well-equipped labs for practical learning with modern equipment and expert guidance.",
         np: "आधुनिक उपकरण र विज्ञ मार्गदर्शनसहित व्यावहारिक सिकाइका लागि राम्रोसँग सुसज्जित प्रयोगशालाहरू।",
       },
-      image: "/placeholder.svg?height=200&width=400",
+      image: "/placeholder.svg",
       icon: <Flask className="h-6 w-6" />,
       color: "bg-blue-100 text-blue-700",
       hoverColor: "group-hover:bg-blue-200 group-hover:text-blue-800",
@@ -52,7 +52,7 @@ const OURSERVICES = () => {
         en: "Comfortable and secure accommodation for students with 24/7 supervision and homely environment.",
         np: "२४ घण्टा निगरानी र घरजस्तो वातावरणसहित विद्यार्थीहरूका लागि आरामदायक र सुरक्षित आवास।",
       },
-      image: "/placeholder.svg?height=200&width=400",
+      image: "/placeholder.svg",
       icon: <Home className="h-6 w-6" />,
       color: "bg-sky-100 text-sky-700",
       hoverColor: "group-hover:bg-sky-200 group-hover:text-sky-800",
@@ -63,7 +63,7 @@ const OURSERVICES = () => {
         en: "Healthy and delicious meals for students and staff with nutritious options and clean environment.",
         np: "विद्यार्थी र कर्मचारीका लागि पौष्टिक विकल्प र सफा वातावरणसहित स्वस्थ र स्वादिलो खाना।",
       },
-      image: "/placeholder.svg?height=200&width=400",
+      image: "/placeholder.svg",
       icon: <Coffee className="h-6 w-6" />,
       color: "bg-blue-100 text-blue-700",
       hoverColor: "group-hover:bg-blue-200 group-hover:text-blue-800",
@@ -179,16 +179,6 @@ const OURSERVICES = () => {
                       {service.description[language]}
                     </CardDescription>
                   </CardContent>
-
-                  <CardFooter>
-                    <Button
-                      variant="outline"
-                      className="w-full text-black group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 border-blue-600"
-                    >
-                      <span>{language === "en" ? "Learn More" : "थप जानकारी"}</span>
-                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
-                    </Button>
-                  </CardFooter>
                 </Card>
               </motion.div>
             ))}

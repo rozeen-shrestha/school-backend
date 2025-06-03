@@ -37,15 +37,14 @@ const CCONTACT = () => {
   const contactData = [
     {
       name: {
-        en: "Principal's Office",
-        np: "प्रिन्सिपलको कार्यालय",
+        en: "Lil Bahadur Shrestha",
+        np: "लिल बहादुर श्रेष्ठ",
       },
       position: {
-        en: "Administrative Head",
-        np: "प्रशासनिक प्रमुख",
+        en: "Principal",
+        np: "प्रधानाध्यापक",
       },
-      phone: "+977-1-234-5678",
-      email: "principal@saraswatischool.edu.np",
+      phones: ["+977-9825834977"],
       department: {
         en: "Administration",
         np: "प्रशासन",
@@ -55,105 +54,49 @@ const CCONTACT = () => {
     },
     {
       name: {
-        en: "Academic Office",
-        np: "शैक्षिक कार्यालय",
+        en: "Hem Gautam",
+        np: "हेम गौतम",
       },
       position: {
-        en: "Academic Coordinator",
-        np: "शैक्षिक संयोजक",
+        en: "Information Officer",
+        np: "सूचना अधिकारी",
       },
-      phone: "+977-1-234-5679",
-      // No email for this contact
+      phones: ["+977-9844396730"],
+      email: "sssdakaha@gmail.com",
       department: {
-        en: "Academics",
-        np: "शैक्षिक",
+        en: "Administration",
+        np: "प्रशासन",
       },
-      icon: <Building className="h-6 w-6" />,
-      color: "bg-sky-100 text-sky-700",
+      icon: <User className="h-6 w-6" />,
+      color: "bg-blue-100 text-blue-700",
     },
     {
       name: {
-        en: "Admission Office",
-        np: "भर्ना कार्यालय",
+        en: "Indra Prasad Acharya",
+        np: "इन्द्र प्रसाद आचार्य",
       },
       position: {
-        en: "Admission Counselor",
-        np: "भर्ना सल्लाहकार",
+        en: "Administration",
+        np: "प्रशासन",
       },
-      // No phone for this contact
-      email: "admission@saraswatischool.edu.np",
+      phones: ["+977-9816752953", "+977-9864036966"],
       department: {
-        en: "Admissions",
-        np: "भर्ना",
+        en: "Administration",
+        np: "प्रशासन",
       },
       icon: <Users className="h-6 w-6" />,
       color: "bg-blue-100 text-blue-700",
-    },
-    {
-      name: {
-        en: "Student Affairs",
-        np: "विद्यार्थी मामिला",
-      },
-      position: {
-        en: "Student Counselor",
-        np: "विद्यार्थी सल्लाहकार",
-      },
-      phone: "+977-1-234-5681",
-      email: "students@saraswatischool.edu.np",
-      department: {
-        en: "Student Services",
-        np: "विद्यार्थी सेवा",
-      },
-      icon: <MessageCircle className="h-6 w-6" />,
-      color: "bg-sky-100 text-sky-700",
-    },
-    {
-      name: {
-        en: "Finance Office",
-        np: "वित्त कार्यालय",
-      },
-      position: {
-        en: "Finance Manager",
-        np: "वित्त प्रबन्धक",
-      },
-      // No phone or email for this contact
-      department: {
-        en: "Finance",
-        np: "वित्त",
-      },
-      icon: <Building className="h-6 w-6" />,
-      color: "bg-blue-100 text-blue-700",
-    },
-    {
-      name: {
-        en: "Transport Office",
-        np: "यातायात कार्यालय",
-      },
-      position: {
-        en: "Transport Coordinator",
-        np: "यातायात संयोजक",
-      },
-      phone: "+977-1-234-5683",
-      email: "transport@saraswatischool.edu.np",
-      department: {
-        en: "Transportation",
-        np: "यातायात",
-      },
-      icon: <MapPin className="h-6 w-6" />,
-      color: "bg-sky-100 text-sky-700",
     },
   ]
 
   const officeHours = {
     en: {
-      weekdays: "Monday - Friday: 8:00 AM - 5:00 PM",
-      saturday: "Saturday: 9:00 AM - 2:00 PM",
-      sunday: "Sunday: Closed",
+      weekdays: "Sunday - Friday: 8:00 AM - 5:00 PM",
+      saturday: "Saturday: Closed",
     },
     np: {
-      weekdays: "सोमबार - शुक्रबार: बिहान ८:०० - साँझ ५:००",
-      saturday: "शनिबार: बिहान ९:०० - दिउँसो २:००",
-      sunday: "आइतबार: बन्द",
+      weekdays: "आइतबार - शुक्रबार: बिहान ८:०० - साँझ ५:००",
+      saturday: "शनिबार: बन्द",
     },
   }
 
@@ -252,19 +195,19 @@ const CCONTACT = () => {
 
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
-                      {contact.phone && (
-                        <div className="flex items-center space-x-3">
+                      {contact.phones && contact.phones.length > 0 && contact.phones.map((phone, idx) => (
+                        <div className="flex items-center space-x-3" key={idx}>
                           <Phone className="h-4 w-4 text-blue-600" />
-                          <span className="text-slate-600">{contact.phone}</span>
+                          <span className="text-slate-600">{phone}</span>
                         </div>
-                      )}
+                      ))}
                       {contact.email && (
                         <div className="flex items-center space-x-3">
                           <Mail className="h-4 w-4 text-blue-600" />
                           <span className="text-slate-600 text-sm">{contact.email}</span>
                         </div>
                       )}
-                      {!contact.phone && !contact.email && (
+                      {!contact.phones && !contact.email && (
                         <div className="flex items-center space-x-3">
                           <MapPin className="h-4 w-4 text-blue-600" />
                           <span className="text-slate-600 text-sm">
@@ -338,10 +281,6 @@ const CCONTACT = () => {
                       <Calendar className="h-4 w-4 text-blue-600" />
                       <span className="text-slate-600">{officeHours[language].saturday}</span>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Calendar className="h-4 w-4 text-blue-600" />
-                      <span className="text-slate-600">{officeHours[language].sunday}</span>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -355,7 +294,7 @@ const CCONTACT = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <p className="text-red-600 font-semibold">+977-1-234-9999</p>
+                    <p className="text-red-600 font-semibold">+977-9844396730</p>
                   </div>
                 </CardContent>
               </Card>

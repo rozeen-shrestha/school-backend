@@ -17,15 +17,18 @@ if (!clientPromise) {
 
 // Ensure default body parser is enabled
 export async function PUT(request, { params }) {
+  console.log('[API] [elibrary/edit] PUT request received');
   const token = await getToken({ req: request });
 
   if (token?.role != 'admin') {
+    console.warn('[API] [elibrary/edit] Unauthorized access attempt');
     return new Response('Unauthorized', { status: 401 });
   }
 
   const { id } = params;
 
   if (!id || !ObjectId.isValid(id)) {
+    console.warn('[API] [elibrary/edit] Invalid Book ID');
     return new Response('Invalid Book ID', { status: 400 });
   }
 
@@ -54,15 +57,17 @@ export async function PUT(request, { params }) {
     );
 
     if (result.matchedCount === 0) {
+      console.warn(`[API] [elibrary/edit] Book not found: ${id}`);
       return new Response('Book not found', { status: 404 });
     }
 
+    console.log(`[API] [elibrary/edit] Book updated: ${id}`);
     return new Response(JSON.stringify({ success: true, message: 'Book updated successfully' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Error updating book:', error);
+    console.error('[API] [elibrary/edit] Error updating book:', error);
     return new Response('Failed to update book', { status: 500 });
   }
 }

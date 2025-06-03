@@ -6,7 +6,6 @@ import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Search, BookOpen, TrendingUp, Users, Star, ArrowRight, Sparkles } from "lucide-react"
 import axios from "axios"
 import Fuse from "fuse.js"
@@ -15,8 +14,6 @@ export default function Home() {
   const [books, setBooks] = useState([])
   const [searchResults, setSearchResults] = useState([])
   const [query, setQuery] = useState("")
-  const [isSearching, setIsSearching] = useState(false)
-  const [featuredBooks, setFeaturedBooks] = useState([])
   const router = useRouter()
 
   useEffect(() => {
@@ -132,57 +129,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        {/* Featured Books Section */}
-        <section className="mb-16">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Featured Books</h2>
-              <p className="text-muted-foreground">Discover our most popular and recommended reads</p>
-            </div>
-            <Button onClick={handleViewAllBooks} variant="outline">
-              View All Books
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {featuredBooks.map((book) => (
-              <Card
-                key={book._id}
-                className="group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm"
-                onClick={() => handleBookClick(book)}
-              >
-                <CardContent className="p-0">
-                  <div className="relative overflow-hidden rounded-t-lg">
-                    <div className="aspect-[3/4] relative">
-                      <Image
-                        src={book.coverImageUrl || "/placeholder.svg"}
-                        alt={book.title}
-                        fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                      <Badge className="bg-white/90 text-slate-900 hover:bg-white">
-                        <BookOpen className="mr-1 h-3 w-3" />
-                        Read
-                      </Badge>
-                    </div>
-                  </div>
-                  <div className="p-4 space-y-2">
-                    <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-blue-600 transition-colors">
-                      {book.title}
-                    </h3>
-                    <p className="text-xs text-muted-foreground line-clamp-1">{book.author}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
         {/* CTA Section */}
         <section className="text-center py-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl text-white">
           <h2 className="text-3xl font-bold mb-4">Ready to Start Reading?</h2>

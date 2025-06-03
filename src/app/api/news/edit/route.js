@@ -16,7 +16,9 @@ if (!clientPromise) {
 export const dynamic = 'force-dynamic'; // Ensure this route is treated as dynamic
 
 export async function PUT(req) { // Change POST to PUT
-  const { id, title, message } = await req.json(); // Get data from request body
+  console.log('[API] [news/edit] PUT request received');
+
+  const { id, title, message, images } = await req.json(); // Add images
 
   const token = await getToken({ req });
   if (token?.role != 'admin'){
@@ -34,12 +36,13 @@ export async function PUT(req) { // Change POST to PUT
 
     // Update the news item in the database
     const result = await db.collection('news').updateOne(
-      { _id: new ObjectId(id) }, // Use ObjectId for MongoDB
+      { _id: new ObjectId(id) },
       {
         $set: {
           title,
           message,
-          lastEdited: new Date() // Optional: track last edited timestamp
+          images: Array.isArray(images) ? images : [],
+          lastEdited: new Date().toISOString()
         }
       }
     );
@@ -48,6 +51,7 @@ export async function PUT(req) { // Change POST to PUT
       return new Response(JSON.stringify({ error: 'Failed to update notice' }), { status: 404 });
     }
 
+    console.log(`[API] [news/edit] News updated: ${id}`);
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (error) {
     console.error("Error updating notice:", error);

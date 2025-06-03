@@ -11,6 +11,7 @@ let cachedClient = null;
 
 async function getDbClient() {
   if (!cachedClient) {
+    console.log('[API] [libraryfiles] Connecting to MongoDB');
     cachedClient = new MongoClient(uri);
     await cachedClient.connect();
   }
@@ -20,8 +21,10 @@ async function getDbClient() {
 export const dynamic = 'force-dynamic';
 
 export async function GET(req, { params }) {
+  console.log('[API] [libraryfiles] GET request received');
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (!token) {
+    console.warn('[API] [libraryfiles] Unauthorized access attempt');
     return new NextResponse('Unauthorized', { status: 401 });
   }
 
@@ -35,15 +38,18 @@ export async function GET(req, { params }) {
   } else if (filePathArray[0] === 'books') {
     baseDir = path.join(process.cwd(), 'elibrary', 'library', 'books');
   } else {
+    console.warn('[API] [libraryfiles] Invalid path:', filePathArray[0]);
     return new NextResponse('Invalid path', { status: 400 });
   }
 
   const fullFilePath = path.resolve(baseDir, ...filePathArray.slice(1));
   if (!fullFilePath.startsWith(baseDir)) {
+    console.warn('[API] [libraryfiles] Path traversal attempt:', fullFilePath);
     return new NextResponse('Invalid path', { status: 400 });
   }
 
   if (token.role === 'admin') {
+    console.log(`[API] [libraryfiles] Admin access granted for file: ${fullFilePath}`);
     return serveFile(fullFilePath, filePathArray[0]);
   }
 
@@ -60,6 +66,7 @@ export async function GET(req, { params }) {
     });
 
     if (!book) {
+      console.warn('[API] [libraryfiles] Book not found for fileId:', fileId);
       return new NextResponse('Not Found', { status: 404 });
     }
 
@@ -70,19 +77,22 @@ export async function GET(req, { params }) {
     const hasTagAccess = book.tags.some(tag => userTags.includes(tag));
 
     if (!hasBookAccess && !hasTagAccess) {
+      console.warn('[API] [libraryfiles] Permission denied for user:', token.name || token.sub);
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
+    console.log(`[API] [libraryfiles] File access granted for user: ${token.name || token.sub}, file: ${fullFilePath}`);
     return serveFile(fullFilePath, filePathArray[0]);
 
   } catch (error) {
-    console.error('Database error:', error);
+    console.error('[API] [libraryfiles] Database error:', error);
     return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
 
 function serveFile(fullFilePath, fileType) {
   if (!fs.existsSync(fullFilePath)) {
+    console.warn('[API] [libraryfiles] File not found:', fullFilePath);
     return new NextResponse('File not found', { status: 404 });
   }
 

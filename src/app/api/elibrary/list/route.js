@@ -15,9 +15,11 @@ if (!clientPromise) {
 }
 
 export async function GET(request) {
+  console.log('[API] [elibrary/list] GET request received');
   try {
     const token = await getToken({ req: request });
     if (!token) {
+      console.warn('[API] [elibrary/list] Unauthorized access attempt');
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
         headers: {
@@ -31,6 +33,7 @@ export async function GET(request) {
 
     const url = new URL(request.url);
     const type = url.searchParams.get('type');
+    console.log(`[API] [elibrary/list] Query type: ${type}`);
 
     let books = [];
     let tagBooks = [];
@@ -39,20 +42,22 @@ export async function GET(request) {
     if (type === 'books' || !type) {
       if (token.permissions.books.includes('all')) {
         books = await db.collection('books').find().toArray();
+        console.log('[API] [elibrary/list] Returning all books');
       } else {
         const bookIds = token.permissions.books.map(id => new ObjectId(id));
         books = await db.collection('books').find({ _id: { $in: bookIds } }).toArray();
+        console.log(`[API] [elibrary/list] Returning books by IDs: ${token.permissions.books}`);
       }
     }
 
     // Fetching tags
     if (type === 'tags' || !type) {
       if (token.permissions.tags.includes('all')) {
-        // If the token has 'all' in tags, return all tags
         tagBooks = await db.collection('books').find().project({ tags: 1 }).toArray();
+        console.log('[API] [elibrary/list] Returning all tags');
       } else {
-        // Otherwise, return books that match the user's tags
         tagBooks = await db.collection('books').find({ tags: { $in: token.permissions.tags } }).project({ tags: 1 }).toArray();
+        console.log(`[API] [elibrary/list] Returning tags by user permissions: ${token.permissions.tags}`);
       }
     }
 
@@ -65,6 +70,7 @@ export async function GET(request) {
         });
         return acc;
       }, []);
+      console.log('[API] [elibrary/list] Returning tags only');
       return new Response(JSON.stringify({ tags: allTags }), {
         status: 200,
         headers: {
@@ -88,7 +94,7 @@ export async function GET(request) {
       },
     });
   } catch (error) {
-    console.error('Error fetching books:', error);
+    console.error('[API] [elibrary/list] Error fetching books:', error);
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       status: 500,
       headers: {

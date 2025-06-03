@@ -14,7 +14,9 @@ const Page = () => {
                 const data = await response.json();
                 const transformedData = data.map(item => ({
                     ...item,
-                    id: item._id
+                    id: item._id,
+                    images: item.images || [],
+                    lastEdited: item.lastEdited ? new Date(item.lastEdited).toLocaleString() : ""
                 }));
                 setNewsData(transformedData);
             } catch (error) {

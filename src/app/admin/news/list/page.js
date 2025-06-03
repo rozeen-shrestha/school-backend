@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { Edit, Trash2 } from "lucide-react"
+import Image from "next/image"
 
 import {
   AlertDialog,
@@ -18,6 +19,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+const SCHOOL_LOGO = "/school-logo.png"
 
 export default function NewsTable() {
   const router = useRouter()
@@ -182,9 +185,19 @@ export default function NewsTable() {
                 <tbody>
                   {currentPageItems.map((item) => (
                     <tr key={item._id} className="hover:bg-muted/50 transition-colors">
-                      <td className="border-b p-3 text-base">{item.title}</td>
+                      <td className="border-b p-3 text-base flex items-center gap-2">
+                        <Image
+                          src={item.images?.[0] ? `/api/file${item.images[0].startsWith('/') ? item.images[0] : '/' + item.images[0]}` : SCHOOL_LOGO}
+                          alt="thumbnail"
+                          width={40}
+                          height={28}
+                          className="rounded object-cover"
+                          unoptimized={!!item.images?.[0]}
+                        />
+                        {item.title}
+                      </td>
                       <td className="border-b p-3 text-base">
-                        {item.lastEdited ? new Date(item.lastEdited).toLocaleDateString() : "N/A"}
+                        {item.lastEdited ? new Date(item.lastEdited).toLocaleString() : "N/A"}
                       </td>
                       <td className="border-b p-3 text-base text-right">
                         <Button variant="outline" size="sm" onClick={() => handleEdit(item._id)}>

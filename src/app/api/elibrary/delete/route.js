@@ -21,9 +21,11 @@ if (!clientPromise) {
 export const dynamic = 'force-dynamic';
 
 export async function DELETE(request) {
+  console.log('[API] [elibrary/delete] DELETE request received');
   const token = await getToken({ req: request });
 
   if (token?.role != 'admin') {
+    console.warn('[API] [elibrary/delete] Unauthorized access attempt');
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -32,6 +34,7 @@ export async function DELETE(request) {
     const { bookId, imageNames, pdfNames } = body;
 
     if (!bookId || !Array.isArray(imageNames) || !Array.isArray(pdfNames)) {
+      console.warn('[API] [elibrary/delete] Invalid request format');
       return NextResponse.json({ error: 'Invalid request format' }, { status: 400 });
     }
 
@@ -42,6 +45,7 @@ export async function DELETE(request) {
     const deleteResult = await db.collection('books').deleteOne({ _id: new ObjectId(bookId) });
 
     if (deleteResult.deletedCount === 0) {
+      console.warn(`[API] [elibrary/delete] Book not found: ${bookId}`);
       return NextResponse.json({ error: 'Book not found' }, { status: 404 });
     }
 
@@ -50,16 +54,25 @@ export async function DELETE(request) {
 
     // Delete associated files
     const deleteFilePromises = [
-      ...imageNames.map(imageName => unlink(join(libraryDir, 'covers', imageName))),
-      ...pdfNames.map(pdfName => unlink(join(libraryDir, 'books', pdfName)))
+      ...imageNames.map(imageName => {
+        const path = join(libraryDir, 'covers', imageName);
+        console.log(`[API] [elibrary/delete] Deleting image: ${path}`);
+        return unlink(path);
+      }),
+      ...pdfNames.map(pdfName => {
+        const path = join(libraryDir, 'books', pdfName);
+        console.log(`[API] [elibrary/delete] Deleting PDF: ${path}`);
+        return unlink(path);
+      })
     ];
 
     await Promise.all(deleteFilePromises);
 
+    console.log(`[API] [elibrary/delete] Book and files deleted for bookId: ${bookId}`);
     return NextResponse.json({ message: 'Book and associated files deleted successfully' }, { status: 200 });
 
   } catch (error) {
-    console.error('Error deleting book:', error);
+    console.error('[API] [elibrary/delete] Error deleting book:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

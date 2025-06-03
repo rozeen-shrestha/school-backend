@@ -18,8 +18,9 @@ export default function BookList() {
     async function fetchBooks() {
       const response = await fetch('/api/elibrary/list');
       const data = await response.json();
-      setBooks(data);
-      setFilteredBooks(data);
+      const safeData = Array.isArray(data) ? data : [];
+      setBooks(safeData);
+      setFilteredBooks(safeData);
     }
     fetchBooks();
   }, []);
@@ -29,7 +30,11 @@ export default function BookList() {
       keys: ['title', 'author', 'tags'],
     });
     const result = fuse.search(searchTerm);
-    setFilteredBooks(searchTerm ? result.map(({ item }) => item) : books);
+    setFilteredBooks(
+      searchTerm
+        ? result.map(({ item }) => item)
+        : Array.isArray(books) ? books : []
+    );
     setVisibleBooks(4); // Reset visible books when search term changes
   }, [searchTerm, books]);
 
@@ -55,35 +60,43 @@ export default function BookList() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8">
-        {filteredBooks.slice(0, visibleBooks).map((book) => (
-          <Card key={book._id} className="flex flex-col h-full">
-            <CardContent className="flex-grow p-4 flex flex-col items-center justify-center text-center">
-              <div className="relative w-full pt-[100%] mb-4">
-                <Image
-                  src={book.coverImageUrl}
-                  alt={book.title}
-                  width={300}
-                  height={300}
-                  className="absolute top-0 left-0 w-full h-full object-cover rounded"
-                />
-              </div>
-              <h3 className="font-semibold text-lg mb-2">{book.title}</h3>
-              <p className="text-sm text-muted-foreground">{book.author}</p>
-            </CardContent>
-            <CardFooter className="p-4">
-              <Button asChild className="w-full">
-                <Link href={`view/${book.pdfUrl.split('/').pop().replace('.pdf', '')}`}>Read</Link>
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-
-      {visibleBooks < filteredBooks.length && (
-        <div className="mt-8 flex justify-center">
-          <Button variant="outline" onClick={loadMoreBooks}>Load More</Button>
+      {Array.isArray(filteredBooks) && filteredBooks.length === 0 ? (
+        <div className="text-center mt-12 text-lg text-red-500 font-semibold">
+          You don't have access to any books
         </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8">
+            {(Array.isArray(filteredBooks) ? filteredBooks : []).slice(0, visibleBooks).map((book) => (
+              <Card key={book._id} className="flex flex-col h-full">
+                <CardContent className="flex-grow p-4 flex flex-col items-center justify-center text-center">
+                  <div className="relative w-full pt-[100%] mb-4">
+                    <Image
+                      src={book.coverImageUrl}
+                      alt={book.title}
+                      width={300}
+                      height={300}
+                      className="absolute top-0 left-0 w-full h-full object-cover rounded"
+                    />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">{book.title}</h3>
+                  <p className="text-sm text-muted-foreground">{book.author}</p>
+                </CardContent>
+                <CardFooter className="p-4">
+                  <Button asChild className="w-full">
+                    <Link href={`view/${book.pdfUrl.split('/').pop().replace('.pdf', '')}`}>Read</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+
+          {visibleBooks < (Array.isArray(filteredBooks) ? filteredBooks.length : 0) && (
+            <div className="mt-8 flex justify-center">
+              <Button variant="outline" onClick={loadMoreBooks}>Load More</Button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -28,18 +28,21 @@ export async function POST(request, { params }) {
   const token = await getToken({ req: request });
 
   if (token?.role !== 'admin') {
+    console.warn('[API] [teachers/edit] Unauthorized access attempt');
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const { id } = params;
 
   if (!id || !ObjectId.isValid(id)) {
+    console.warn('[API] [teachers/edit] Invalid Teacher ID:', id);
     return NextResponse.json({ error: 'Invalid Teacher ID' }, { status: 400 });
   }
 
   const contentType = request.headers.get('Content-Type');
 
   if (!contentType.includes('multipart/form-data')) {
+    console.warn('[API] [teachers/edit] Invalid Content-Type:', contentType);
     return NextResponse.json({ error: 'Invalid Content-Type' }, { status: 400 });
   }
 
@@ -57,6 +60,7 @@ export async function POST(request, { params }) {
     const description = formData.get('description');
 
     if (image && !isValidImageFile(image)) {
+      console.warn('[API] [teachers/edit] Invalid image file type');
       return NextResponse.json({ error: 'Invalid image file type' }, { status: 400 });
     }
 
@@ -67,6 +71,7 @@ export async function POST(request, { params }) {
     // Fetch the current teacher data to get the old photo URL
     const teacher = await collection.findOne({ _id: new ObjectId(id) });
     if (!teacher) {
+      console.warn('[API] [teachers/edit] Teacher not found:', id);
       return NextResponse.json({ error: 'Teacher not found' }, { status: 404 });
     }
 
@@ -84,6 +89,7 @@ export async function POST(request, { params }) {
         const oldPhotoPath = join(process.cwd(), 'public', teacher.photoUrl);
         try {
           await unlink(oldPhotoPath);
+          console.log('[API] [teachers/edit] Deleted old photo:', oldPhotoPath);
         } catch (error) {
           console.error('Error deleting old photo:', error);
         }
@@ -110,9 +116,11 @@ export async function POST(request, { params }) {
     );
 
     if (result.matchedCount === 0) {
+      console.warn('[API] [teachers/edit] Teacher not found on update:', id);
       return NextResponse.json({ error: 'Teacher not found' }, { status: 404 });
     }
 
+    console.log('[API] [teachers/edit] Teacher updated:', id);
     return NextResponse.json({ success: true, message: 'Teacher updated successfully' });
   } catch (error) {
     console.error('Error updating teacher:', error);
