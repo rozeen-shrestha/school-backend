@@ -4,6 +4,7 @@ import axios from 'axios';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { Separator } from "@/components/ui/separator";
+import Image from 'next/image'; // <-- Add this import
 
 export default function Page() {
   // Add new state for modal
@@ -173,12 +174,16 @@ export default function Page() {
                       data-aos-duration="400"
                       data-aos-offset="0"
                     >
-                      <img
-                        src={image.url}
-                        alt={`${image.category} image`}
-                        className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
-                        loading="lazy"
-                      />
+                      <div className="relative w-full h-64">
+                        <Image
+                          src={image.url.replace('/api/file/', '/api/file')} // Use old src logic
+                          alt={`${image.category} image`}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-110"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          loading="lazy"
+                        />
+                      </div>
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200" />
                     </div>
                   ))}
@@ -205,11 +210,16 @@ export default function Page() {
             >
               ×
             </button>
-            <img
-              src={selectedImage?.url}
-              alt={`${selectedImage?.category} full view`}
-              className="max-h-[90vh] max-w-full object-contain"
-            />
+            <div className="relative w-full max-w-4xl h-[90vh] flex items-center justify-center">
+              <Image
+                src={selectedImage?.url?.replace('/api/file/', '/api/file')} // Use old src logic
+                alt={`${selectedImage?.category} full view`}
+                fill
+                className="object-contain"
+                sizes="100vw"
+                priority
+              />
+            </div>
           </div>
         </div>
       )}

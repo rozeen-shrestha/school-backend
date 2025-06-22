@@ -245,7 +245,7 @@ const Navbar = () => {
             <div className="px-4 py-4 flex justify-between items-center">
               <div className="flex items-center space-x-4">
                 <img
-                  src="/placeholder.svg?height=48&width=48"
+                  src="/logo.svg?height=48&width=48"
                   alt="School Logo"
                   className="w-12 h-12 rounded-full shadow-lg object-cover"
                 />
@@ -287,7 +287,7 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-8 w-full">
               {isScrolled && (
                 <img
-                  src="/placeholder.svg?height=40&width=40"
+                  src="/logo.svg?height=40&width=40"
                   alt="School Logo"
                   className="w-10 h-10 rounded-full shadow-lg object-cover"
                 />

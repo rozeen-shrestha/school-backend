@@ -7,7 +7,7 @@ import React from 'react'
 
 const page = () => {
   return (
-    <div>
+    <div style={{ overflowX: 'hidden' }}>
       <Navbar/>
       <HERO/>
       <OBJMISSION/>

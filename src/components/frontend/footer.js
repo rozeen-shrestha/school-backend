@@ -89,9 +89,9 @@ const Footer = () => {
               className="flex flex-col items-center lg:items-start text-center lg:text-left"
             >
               <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }} className="mb-4">
-                <div className="w-32 h-32 bg-white rounded-full p-4 shadow-lg">
+                <div className="w-32 h-32 ">
                   <img
-                    src="/placeholder.svg?height=120&width=120"
+                    src="/logo.svg?height=160&width=160"
                     alt="School Logo"
                     className="w-full h-full object-contain"
                   />
